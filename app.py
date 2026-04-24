@@ -245,7 +245,7 @@ if "generated_results" not in st.session_state:
 
 st.markdown('<div class="main-title">✅ 네이버 예약자 리뷰 원고 생성기</div>', unsafe_allow_html=True)
 st.markdown(
-    '<div class="sub-title">업종, 고객 가이드, 말투를 선택하면 자연스러운 예약자 리뷰 원고를 한 번에 생성합니다.</div>',
+    '<div class="sub-title">자연스러운 예약자 리뷰 원고를 한 번에 생성합니다.</div>',
     unsafe_allow_html=True
 )
 
