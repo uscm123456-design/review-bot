@@ -232,6 +232,14 @@ input, textarea {
     border: 1px solid #d1d5db !important;
 }
 
+            [data-testid="stSelectbox"] span {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+
 hr {
     margin-top: 10px;
     margin-bottom: 18px;
