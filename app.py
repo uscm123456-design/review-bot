@@ -222,21 +222,41 @@ input, textarea {
     min-height: 140px;
 }
 
-[data-testid="stSelectbox"] div {
-    color: #111827 !important;
-    border-radius: 12px !important;
-}
-
-[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+/* selectbox 전체 박스 */
+[data-testid="stSelectbox"] [data-baseweb="select"] {
     background-color: #ffffff !important;
     border: 1px solid #d1d5db !important;
+    border-radius: 14px !important;
 }
 
-            [data-testid="stSelectbox"] span {
+/* 선택된 값 영역 테두리 제거 */
+[data-testid="stSelectbox"] [data-baseweb="tag"] {
+    background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    background: transparent !important;
     padding: 0 !important;
+}
+
+/* 선택된 값 안쪽 텍스트 */
+[data-testid="stSelectbox"] [data-baseweb="tag"] span {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* 내부 input 테두리/밑줄 제거 */
+[data-testid="stSelectbox"] input {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    background: transparent !important;
+    text-decoration: none !important;
+}
+
+/* 이상한 빨간 밑줄 제거 */
+[data-testid="stSelectbox"] * {
+    text-decoration: none !important;
 }
 
 
