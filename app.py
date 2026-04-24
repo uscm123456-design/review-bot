@@ -223,12 +223,12 @@ input, textarea {
 }
 
 [data-testid="stSelectbox"] div {
-    background-color: #ffffff !important;
     color: #111827 !important;
     border-radius: 12px !important;
 }
 
-[data-testid="stSelectbox"] div[role="button"] {
+[data-testid="stSelectbox"] [data-baseweb="select"] > div {
+    background-color: #ffffff !important;
     border: 1px solid #d1d5db !important;
 }
 
