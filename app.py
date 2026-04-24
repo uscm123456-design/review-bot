@@ -1,15 +1,12 @@
 import streamlit as st
 from anthropic import Anthropic
 import random
-import os
 import re
 
 # =========================
 # API 키 설정
 # =========================
 CLAUDE_API_KEY = st.secrets["CLAUDE_API_KEY"]
-# 배포용 권장 방식
-# CLAUDE_API_KEY = st.secrets.get("CLAUDE_API_KEY", os.getenv("CLAUDE_API_KEY"))
 
 
 # =========================
@@ -96,7 +93,6 @@ CATEGORY_PATTERNS = {
             "생각보다 절차가 편해서 좋았어요"
         ]
     },
-
     "운동/PT/헬스": {
         "첫방문": [
             "처음 상담받으러 갔는데",
@@ -111,29 +107,26 @@ CATEGORY_PATTERNS = {
             "시설이 깔끔해서 첫인상이 좋았어요"
         ]
     },
-
-   "펜션/숙박": {
+    "펜션/숙박": {
         "주변추천": [
-            "지인이 추천해줬는데 ",
+            "지인이 추천해줬는데",
             "리뷰 보고 골랐는데",
             "후기가 좋은 이유가 있었네요",
-            "아시는분이 강력추천해줬습니다."
+            "아시는 분이 추천해줘서 방문했어요"
         ],
         "검색": [
-            "이곳저곳에 검색을 해보다가",
-            "후기가 항상 좋았어서",
-            "앞으로 단골 될 것 같아요",
-            "이번에도 만족스럽게 이용했어요"
+            "이곳저곳 검색해보다가",
+            "후기가 좋아서 궁금했는데",
+            "숙소 찾다가 괜찮아 보여서 예약했어요",
+            "여행 준비하면서 알아보다가 선택했어요"
         ],
         "만족": [
-            "간만에 진짜 기분 좋은 방문이었어요",
+            "간만에 기분 좋은 숙박이었어요",
             "가격 대비 만족도가 좋았어요",
-            "친절한 응대 덕분에 기분 좋게 이용했습니다",
-            "전체적으로 편하게 이용하기 좋았어요"
+            "친절한 응대 덕분에 편하게 쉬다 왔습니다",
+            "전체적으로 쉬기 좋은 분위기였어요"
         ]
     },
-
-
     "일반/범용": {
         "첫방문": [
             "처음 방문해봤는데",
@@ -163,9 +156,10 @@ CATEGORY_PATTERNS = {
 CATEGORY_RULES = {
     "음식점/카페": "음식 맛, 분위기, 친절함, 청결, 양, 가격 만족도, 재방문 의사, 모임/데이트/가족 외식 상황을 자연스럽게 섞어라. 고객 가이드에 없는 메뉴명은 임의로 만들지 마라.",
     "뷰티/관리": "상담, 위생, 친절함, 꼼꼼함, 시술/관리 만족도, 편안한 분위기, 재방문 의사를 자연스럽게 섞어라. 효과를 과장하지 말고 실제 만족감 위주로 작성하라.",
-    "병원/요양/장례": "신뢰감, 친절한 상담, 시설 청결, 세심한 안내, 보호자 입장에서의 안심, 차분한 분위기를 중심으로 작성하라. 치료 효과나 결과를 확정적으로 말하지 마라.",
+    "요양/장례": "신뢰감, 친절한 상담, 시설 청결, 세심한 안내, 보호자 입장에서의 안심, 차분한 분위기를 중심으로 작성하라. 치료 효과나 결과를 확정적으로 말하지 마라.",
     "휴대폰/전자기기": "친절한 상담, 요금제 설명, 데이터 이동, 사은품, 가격 만족도, 가족 재방문 의사를 자연스럽게 반영하라. 무조건 최저가 같은 과장 표현은 피하라.",
     "운동/PT/헬스": "시설 청결, 기구 상태, 트레이너 상담, 운동 루틴, 맞춤 관리, 분위기, 재방문 의사를 섞어라. 몸 변화는 과장하지 말고 만족감 위주로 작성하라.",
+    "펜션/숙박": "숙소 청결, 객실 컨디션, 친절한 안내, 편안한 휴식, 위치, 주차, 가족/커플/친구 여행 상황을 자연스럽게 섞어라. 없는 시설이나 부대서비스는 임의로 만들지 마라.",
     "일반/범용": "친절함, 청결, 분위기, 가격 만족도, 접근성, 재방문 의사를 업종에 맞게 자연스럽게 조합하라."
 }
 
@@ -238,73 +232,148 @@ def clean_reviews(text):
 # =========================
 # Streamlit 설정
 # =========================
-st.set_page_config(page_title="예약자원고생성", layout="centered")
+st.set_page_config(page_title="예약자원고생성", layout="wide")
 
 if "generated_results" not in st.session_state:
     st.session_state.generated_results = []
 
+st.markdown("""
+<style>
+.block-container {
+    max-width: 1280px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+.main-title {
+    font-size: 34px;
+    font-weight: 850;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.sub-title {
+    font-size: 15px;
+    color: #6b7280;
+    margin-bottom: 24px;
+}
+
+.panel {
+    background: #ffffff;
+    padding: 22px;
+    border-radius: 18px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+    margin-bottom: 18px;
+}
+
+.panel-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.result-box {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.info-box {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 14px;
+    padding: 18px;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.stButton > button {
+    height: 48px;
+    border-radius: 12px;
+    font-weight: 800;
+}
+
+textarea {
+    border-radius: 12px !important;
+}
+
+input {
+    border-radius: 10px !important;
+}
+
+[data-testid="stTextArea"] textarea {
+    min-height: 130px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 st.markdown('<div class="main-title">✅ 네이버 예약자 리뷰 원고 생성기</div>', unsafe_allow_html=True)
 st.markdown(
-    '<div class="sub-title">자연스러운 예약자 리뷰 원고를 한 번에 생성합니다.</div>',
+    '<div class="sub-title">업종, 고객 가이드, 말투를 선택하면 자연스러운 예약자 리뷰 원고를 한 번에 생성합니다.</div>',
     unsafe_allow_html=True
 )
 
+left, right = st.columns([1, 1.25], gap="large")
+
 
 # =========================
-# UI
+# 왼쪽 입력 UI
 # =========================
-col_cat1, col_cat2 = st.columns(2)
+with left:
+    st.markdown('<div class="panel-title">⚙️ 생성 설정</div>', unsafe_allow_html=True)
 
-with col_cat1:
     category_group = st.selectbox("업종 대분류 선택", list(CATEGORY_PATTERNS.keys()))
-
-with col_cat2:
     category = st.text_input("상세 업종", value="고기집")
 
-situation = st.selectbox(
-    "방문 상황 선택",
-    list(CATEGORY_PATTERNS[category_group].keys())
-)
+    situation = st.selectbox(
+        "방문 상황 선택",
+        list(CATEGORY_PATTERNS[category_group].keys())
+    )
 
-count = st.number_input(
-    "생성할 리뷰 수",
-    min_value=1,
-    max_value=200,
-    value=10
-)
+    count = st.number_input(
+        "생성할 리뷰 수",
+        min_value=1,
+        max_value=200,
+        value=10
+    )
 
-col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2)
 
-with col1:
-    min_len = st.number_input("최소 글자수", value=100)
+    with col1:
+        min_len = st.number_input("최소 글자수", value=100)
 
-with col2:
-    max_len = st.number_input("최대 글자수", value=200)
+    with col2:
+        max_len = st.number_input("최대 글자수", value=200)
 
-guide = st.text_area(
-    "고객 가이드 / 업체 특장점",
-    value="알바생이 고기 직접 구워줌, 직원 친절, 화장실 깔끔, 재방문 의사, 가족 방문 좋음"
-)
+    guide = st.text_area(
+        "고객 가이드 / 업체 특장점",
+        value="알바생이 고기 직접 구워줌, 직원 친절, 화장실 깔끔, 재방문 의사, 가족 방문 좋음"
+    )
 
-must_include = st.text_input(
-    "필수 포함 키워드",
-    value=""
-)
+    must_include = st.text_input(
+        "필수 포함 키워드",
+        value=""
+    )
 
-forbidden = st.text_input(
-    "금지 키워드 / 금지 표현",
-    value="과장된 표현, 없는 메뉴명, 없는 서비스, 무조건 최고"
-)
+    forbidden = st.text_input(
+        "금지 키워드 / 금지 표현",
+        value="과장된 표현, 없는 메뉴명, 없는 서비스, 무조건 최고"
+    )
 
-selected_persona = st.selectbox(
-    "말투 선택",
-    list(PERSONA_PROMPTS.keys())
-)
+    selected_persona = st.selectbox(
+        "말투 선택",
+        list(PERSONA_PROMPTS.keys())
+    )
 
-col_run, col_clear = st.columns(2)
+    col_run, col_clear = st.columns(2)
 
-run_btn = col_run.button("🚀 리뷰 생성 시작", use_container_width=True)
-clear_btn = col_clear.button("🗑 결과 초기화", use_container_width=True)
+    run_btn = col_run.button("🚀 리뷰 생성 시작", use_container_width=True)
+    clear_btn = col_clear.button("🗑 결과 초기화", use_container_width=True)
 
 
 # =========================
@@ -320,7 +389,7 @@ if clear_btn:
 # =========================
 if run_btn:
 
-    if not CLAUDE_API_KEY or CLAUDE_API_KEY == "여기에_CLAUDE_API_KEY_입력":
+    if not CLAUDE_API_KEY:
         st.error("CLAUDE_API_KEY를 입력해주세요.")
 
     elif not guide.strip():
@@ -333,8 +402,9 @@ if run_btn:
         client = Anthropic(api_key=CLAUDE_API_KEY)
         target_count = int(count)
 
-        status_text = st.empty()
-        status_text.text(f"⏳ 리뷰 {target_count}개 생성 중...")
+        with right:
+            status_text = st.empty()
+            status_text.info(f"⏳ 리뷰 {target_count}개 생성 중입니다. 잠시만 기다려주세요...")
 
         try:
             selected_starts = random.choices(
@@ -428,7 +498,8 @@ if run_btn:
 
             st.session_state.generated_results = new_reviews[:target_count]
 
-            status_text.text("✅ 생성 완료")
+            with right:
+                status_text.success("✅ 생성 완료")
 
             if len(st.session_state.generated_results) < target_count:
                 st.warning(
@@ -441,27 +512,38 @@ if run_btn:
 
 
 # =========================
-# 결과 출력
+# 오른쪽 결과 UI
 # =========================
-st.markdown("---")
+with right:
+    st.markdown('<div class="panel-title">📝 생성 결과</div>', unsafe_allow_html=True)
 
-if st.session_state.generated_results:
-    excel_ready = "\n".join(st.session_state.generated_results)
+    if st.session_state.generated_results:
+        excel_ready = "\n".join(st.session_state.generated_results)
 
-    st.subheader("📋 엑셀 붙여넣기용")
-    st.text_area(
-        "아래 내용을 전체 복사해서 시트에 붙여넣으세요.",
-        value=excel_ready,
-        height=320
-    )
+        st.text_area(
+            "📋 엑셀 붙여넣기용 전체 복사",
+            value=excel_ready,
+            height=260
+        )
 
-    st.subheader("📝 생성된 리뷰 미리보기")
+        st.markdown("#### 미리보기")
 
-    for idx, text in enumerate(st.session_state.generated_results):
+        for idx, text in enumerate(st.session_state.generated_results):
+            st.markdown(
+                f"""
+                <div class="result-box">
+                    <b>{idx + 1}.</b> {text}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+    else:
         st.markdown(
-            f"""
-            <div class="result-box">
-                <b>{idx + 1}.</b> {text}
+            """
+            <div class="info-box">
+                아직 생성된 리뷰가 없습니다.<br>
+                왼쪽에서 업종과 고객 가이드를 입력한 뒤 <b>리뷰 생성 시작</b> 버튼을 눌러주세요.
             </div>
             """,
             unsafe_allow_html=True
