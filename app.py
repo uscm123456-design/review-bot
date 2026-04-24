@@ -2,157 +2,48 @@ import streamlit as st
 from anthropic import Anthropic
 import random
 import re
+import streamlit.components.v1 as components
+import json
 
-# =========================
-# API 키 설정
-# =========================
 CLAUDE_API_KEY = st.secrets["CLAUDE_API_KEY"]
 
-
-# =========================
-# 업종별 도입부
-# =========================
 CATEGORY_PATTERNS = {
     "음식점/카페": {
-        "예약/방문": [
-            "예약하고 방문했는데",
-            "주말이라 미리 예약하고 오길 잘했네요",
-            "예약 시간 맞춰 갔더니 바로 안내받았어요",
-            "미리 예약해두고 방문했는데"
-        ],
-        "추천/검색": [
-            "지인 추천으로 왔는데",
-            "평이 좋아서 궁금했는데",
-            "리뷰 보고 골랐는데",
-            "검색하다가 괜찮아 보여서 방문했어요"
-        ],
-        "가족/모임": [
-            "가족들이랑 같이 왔는데",
-            "부모님 모시고 방문했는데",
-            "모임 장소로 골랐는데",
-            "친구들이랑 식사하러 왔어요"
-        ],
-        "일상방문": [
-            "근처 올 일 있어서 들렀는데",
-            "퇴근하고 친구랑 들렀는데",
-            "가볍게 밥 먹으러 들어왔는데",
-            "오랜만에 외식하고 싶어서 방문했어요"
-        ]
+        "예약/방문": ["예약하고 방문했는데", "주말이라 미리 예약하고 오길 잘했네요", "예약 시간 맞춰 갔더니 바로 안내받았어요", "미리 예약해두고 방문했는데"],
+        "추천/검색": ["지인 추천으로 왔는데", "평이 좋아서 궁금했는데", "리뷰 보고 골랐는데", "검색하다가 괜찮아 보여서 방문했어요"],
+        "가족/모임": ["가족들이랑 같이 왔는데", "부모님 모시고 방문했는데", "모임 장소로 골랐는데", "친구들이랑 식사하러 왔어요"],
+        "일상방문": ["근처 올 일 있어서 들렀는데", "퇴근하고 친구랑 들렀는데", "가볍게 밥 먹으러 들어왔는데", "오랜만에 외식하고 싶어서 방문했어요"]
     },
     "뷰티/관리": {
-        "예약/첫방문": [
-            "네이버 예약으로 편하게 방문했어요",
-            "처음 방문해봤는데",
-            "리뷰 보고 골랐는데",
-            "예약하고 시간 맞춰 방문했어요"
-        ],
-        "상담/친절": [
-            "상담부터 친절하게 해주셔서",
-            "처음이라 긴장했는데 편하게 안내해주셨어요",
-            "하나하나 설명해주시는 점이 좋았어요",
-            "방문 전부터 궁금한 게 많았는데"
-        ],
-        "관리만족": [
-            "관리받는 내내 편안했어요",
-            "꼼꼼하게 봐주시는 게 느껴졌어요",
-            "위생적으로 관리되는 느낌이라 믿음이 갔어요",
-            "생각보다 편하게 받고 왔어요"
-        ],
-        "재방문": [
-            "항상 믿고 방문하는 곳인데",
-            "다시 오고 싶다는 생각이 들었어요",
-            "이번 방문도 만족스러웠어요",
-            "주변에도 추천하고 싶은 곳이에요"
-        ]
+        "예약/첫방문": ["네이버 예약으로 편하게 방문했어요", "처음 방문해봤는데", "리뷰 보고 골랐는데", "예약하고 시간 맞춰 방문했어요"],
+        "상담/친절": ["상담부터 친절하게 해주셔서", "처음이라 긴장했는데 편하게 안내해주셨어요", "하나하나 설명해주시는 점이 좋았어요", "방문 전부터 궁금한 게 많았는데"],
+        "관리만족": ["관리받는 내내 편안했어요", "꼼꼼하게 봐주시는 게 느껴졌어요", "위생적으로 관리되는 느낌이라 믿음이 갔어요", "생각보다 편하게 받고 왔어요"],
+        "재방문": ["항상 믿고 방문하는 곳인데", "다시 오고 싶다는 생각이 들었어요", "이번 방문도 만족스러웠어요", "주변에도 추천하고 싶은 곳이에요"]
     },
     "요양/장례": {
-        "상담/안내": [
-            "상담부터 차분하게 안내해주셔서",
-            "처음이라 걱정이 많았는데",
-            "문의했을 때부터 친절하게 설명해주셨어요",
-            "방문 전 걱정이 있었는데"
-        ],
-        "시설/신뢰": [
-            "시설이 깔끔하게 관리되어 있어서",
-            "전체적으로 차분한 분위기라",
-            "직원분들이 세심하게 챙겨주셔서",
-            "안내가 자세해서 믿음이 갔어요"
-        ]
+        "상담/안내": ["상담부터 차분하게 안내해주셔서", "처음이라 걱정이 많았는데", "문의했을 때부터 친절하게 설명해주셨어요", "방문 전 걱정이 있었는데"],
+        "시설/신뢰": ["시설이 깔끔하게 관리되어 있어서", "전체적으로 차분한 분위기라", "직원분들이 세심하게 챙겨주셔서", "안내가 자세해서 믿음이 갔어요"]
     },
     "휴대폰/전자기기": {
-        "상담": [
-            "상담받으러 방문했는데",
-            "휴대폰 바꾸려고 알아보다가 방문했어요",
-            "요금제 때문에 고민이 많았는데",
-            "처음 상담받아봤는데"
-        ],
-        "구매/만족": [
-            "설명을 자세히 해주셔서",
-            "데이터 이동까지 도와주셔서",
-            "가족 폰 바꿀 때도 다시 오고 싶어요",
-            "생각보다 절차가 편해서 좋았어요"
-        ]
+        "상담": ["상담받으러 방문했는데", "휴대폰 바꾸려고 알아보다가 방문했어요", "요금제 때문에 고민이 많았는데", "처음 상담받아봤는데"],
+        "구매/만족": ["설명을 자세히 해주셔서", "데이터 이동까지 도와주셔서", "가족 폰 바꿀 때도 다시 오고 싶어요", "생각보다 절차가 편해서 좋았어요"]
     },
     "운동/PT/헬스": {
-        "첫방문": [
-            "처음 상담받으러 갔는데",
-            "운동 시작하려고 알아보다가 방문했어요",
-            "시설이 궁금해서 방문해봤는데",
-            "운동을 다시 시작하려고 들렀어요"
-        ],
-        "수업/시설": [
-            "기구가 잘 갖춰져 있어서",
-            "트레이너님이 자세를 꼼꼼히 봐주셔서",
-            "운동 분위기가 좋아서 꾸준히 다니기 좋겠어요",
-            "시설이 깔끔해서 첫인상이 좋았어요"
-        ]
+        "첫방문": ["처음 상담받으러 갔는데", "운동 시작하려고 알아보다가 방문했어요", "시설이 궁금해서 방문해봤는데", "운동을 다시 시작하려고 들렀어요"],
+        "수업/시설": ["기구가 잘 갖춰져 있어서", "트레이너님이 자세를 꼼꼼히 봐주셔서", "운동 분위기가 좋아서 꾸준히 다니기 좋겠어요", "시설이 깔끔해서 첫인상이 좋았어요"]
     },
     "펜션/숙박": {
-        "주변추천": [
-            "지인이 추천해줬는데",
-            "리뷰 보고 골랐는데",
-            "후기가 좋은 이유가 있었네요",
-            "아시는 분이 추천해줘서 방문했어요"
-        ],
-        "검색": [
-            "이곳저곳 검색해보다가",
-            "후기가 좋아서 궁금했는데",
-            "숙소 찾다가 괜찮아 보여서 예약했어요",
-            "여행 준비하면서 알아보다가 선택했어요"
-        ],
-        "만족": [
-            "간만에 기분 좋은 숙박이었어요",
-            "가격 대비 만족도가 좋았어요",
-            "친절한 응대 덕분에 편하게 쉬다 왔습니다",
-            "전체적으로 쉬기 좋은 분위기였어요"
-        ]
+        "주변추천": ["지인이 추천해줬는데", "리뷰 보고 골랐는데", "후기가 좋은 이유가 있었네요", "아시는 분이 추천해줘서 방문했어요"],
+        "검색": ["이곳저곳 검색해보다가", "후기가 좋아서 궁금했는데", "숙소 찾다가 괜찮아 보여서 예약했어요", "여행 준비하면서 알아보다가 선택했어요"],
+        "만족": ["간만에 기분 좋은 숙박이었어요", "가격 대비 만족도가 좋았어요", "친절한 응대 덕분에 편하게 쉬다 왔습니다", "전체적으로 쉬기 좋은 분위기였어요"]
     },
     "일반/범용": {
-        "첫방문": [
-            "처음 방문해봤는데",
-            "리뷰 보고 골랐는데",
-            "후기가 좋은 이유가 있었네요",
-            "궁금해서 방문해봤는데"
-        ],
-        "재방문": [
-            "오랜만에 재방문했는데",
-            "항상 믿고 방문하는 곳인데",
-            "앞으로 단골 될 것 같아요",
-            "이번에도 만족스럽게 이용했어요"
-        ],
-        "만족": [
-            "간만에 진짜 기분 좋은 방문이었어요",
-            "가격 대비 만족도가 좋았어요",
-            "친절한 응대 덕분에 기분 좋게 이용했습니다",
-            "전체적으로 편하게 이용하기 좋았어요"
-        ]
+        "첫방문": ["처음 방문해봤는데", "리뷰 보고 골랐는데", "후기가 좋은 이유가 있었네요", "궁금해서 방문해봤는데"],
+        "재방문": ["오랜만에 재방문했는데", "항상 믿고 방문하는 곳인데", "앞으로 단골 될 것 같아요", "이번에도 만족스럽게 이용했어요"],
+        "만족": ["간만에 진짜 기분 좋은 방문이었어요", "가격 대비 만족도가 좋았어요", "친절한 응대 덕분에 기분 좋게 이용했습니다", "전체적으로 편하게 이용하기 좋았어요"]
     }
 }
 
-
-# =========================
-# 업종별 기본 작성 방향
-# =========================
 CATEGORY_RULES = {
     "음식점/카페": "음식 맛, 분위기, 친절함, 청결, 양, 가격 만족도, 재방문 의사, 모임/데이트/가족 외식 상황을 자연스럽게 섞어라. 고객 가이드에 없는 메뉴명은 임의로 만들지 마라.",
     "뷰티/관리": "상담, 위생, 친절함, 꼼꼼함, 시술/관리 만족도, 편안한 분위기, 재방문 의사를 자연스럽게 섞어라. 효과를 과장하지 말고 실제 만족감 위주로 작성하라.",
@@ -163,10 +54,6 @@ CATEGORY_RULES = {
     "일반/범용": "친절함, 청결, 분위기, 가격 만족도, 접근성, 재방문 의사를 업종에 맞게 자연스럽게 조합하라."
 }
 
-
-# =========================
-# 말투
-# =========================
 PERSONA_PROMPTS = {
     "자연스러운 20대 여성": "~했어요, ~좋았어요, ㅎㅎ, 😊 등을 가끔 섞되 과하지 않게 작성.",
     "담백한 20~30대 남성": "짧고 담백하게, ~했네요, ~괜찮았습니다, ~만족합니다 식으로 작성.",
@@ -175,10 +62,6 @@ PERSONA_PROMPTS = {
     "간결하고 명확하게": "군더더기 없이 핵심 장점만 자연스럽게 작성."
 }
 
-
-# =========================
-# 반복 방지
-# =========================
 BANNED_PHRASES = """
 편하게 먹을 수 있었어요
 기분 좋게 식사했네요
@@ -206,10 +89,6 @@ WRITING_STYLES = [
     "가볍게 들렀다가 만족한 흐름으로 작성"
 ]
 
-
-# =========================
-# 결과 정리 함수
-# =========================
 def clean_reviews(text):
     lines = text.splitlines()
     cleaned = []
@@ -229,9 +108,6 @@ def clean_reviews(text):
     return cleaned
 
 
-# =========================
-# Streamlit 설정
-# =========================
 st.set_page_config(page_title="예약자원고생성", layout="wide")
 
 if "generated_results" not in st.session_state:
@@ -239,120 +115,145 @@ if "generated_results" not in st.session_state:
 
 st.markdown("""
 <style>
+.stApp {
+    background:
+        radial-gradient(circle at top left, rgba(99,102,241,0.16), transparent 32%),
+        radial-gradient(circle at top right, rgba(14,165,233,0.14), transparent 30%),
+        linear-gradient(135deg, #f8fafc 0%, #eef2ff 48%, #ffffff 100%);
+}
+
 .block-container {
-    max-width: 1280px;
-    padding-top: 2rem;
+    max-width: 1320px;
+    padding-top: 2.2rem;
     padding-bottom: 3rem;
 }
 
 .main-title {
-    font-size: 34px;
-    font-weight: 850;
+    font-size: 38px;
+    font-weight: 950;
     margin-bottom: 8px;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.8px;
+    background: linear-gradient(90deg, #2563eb, #7c3aed, #db2777);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .sub-title {
     font-size: 15px;
-    color: #6b7280;
+    color: #64748b;
     margin-bottom: 24px;
 }
 
-.panel {
-    background: #ffffff;
-    padding: 22px;
-    border-radius: 18px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
-    margin-bottom: 18px;
+.top-card {
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 24px;
+    padding: 24px 26px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+    margin-bottom: 22px;
 }
 
 .panel-title {
-    font-size: 20px;
-    font-weight: 800;
+    font-size: 21px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+}
+
+.section-caption {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: -8px;
     margin-bottom: 16px;
 }
 
 .result-box {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    line-height: 1.6;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 17px;
+    padding: 15px 17px;
+    margin-bottom: 11px;
+    line-height: 1.65;
     font-size: 15px;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.045);
 }
 
 .info-box {
-    background: #f8fafc;
-    border: 1px dashed #cbd5e1;
-    border-radius: 14px;
-    padding: 18px;
+    background: rgba(255,255,255,0.78);
+    border: 1px dashed #94a3b8;
+    border-radius: 18px;
+    padding: 22px;
     color: #64748b;
-    line-height: 1.6;
+    line-height: 1.7;
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.04);
 }
 
 .stButton > button {
-    height: 48px;
-    border-radius: 12px;
-    font-weight: 800;
+    height: 50px;
+    border-radius: 15px;
+    font-weight: 900;
+    border: none;
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.14);
 }
 
-textarea {
-    border-radius: 12px !important;
+.stButton > button:hover {
+    transform: translateY(-1px);
+    transition: 0.15s ease;
 }
 
-input {
-    border-radius: 10px !important;
+input, textarea {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 14px !important;
+}
+
+[data-testid="stNumberInput"] input {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+    border: 1px solid #d1d5db !important;
 }
 
 [data-testid="stTextArea"] textarea {
-    min-height: 130px;
+    background-color: #ffffff !important;
+    color: #111827 !important;
+    border: 1px solid #d1d5db !important;
+    min-height: 140px;
+}
+
+[data-testid="stSelectbox"] div {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+    border-radius: 12px !important;
+}
+
+[data-testid="stSelectbox"] div[role="button"] {
+    border: 1px solid #d1d5db !important;
+}
+
+hr {
+    margin-top: 10px;
+    margin-bottom: 18px;
 }
 </style>
 """, unsafe_allow_html=True)
 
-/* 입력창 배경 개선 */
-input, textarea {
-    background-color: #ffffff !important;
-    color: #111 !important;
-    border: 1px solid #d1d5db !important;
-}
-
-/* selectbox */
-[data-testid="stSelectbox"] div {
-    background-color: #ffffff !important;
-    color: #111 !important;
-}
-
-/* number input */
-[data-testid="stNumberInput"] input {
-    background-color: #ffffff !important;
-    color: #111 !important;
-}
-
-/* textarea 내부 */
-[data-testid="stTextArea"] textarea {
-    background-color: #ffffff !important;
-    color: #111 !important;
-}
-
-
-
-st.markdown('<div class="main-title">✅ 네이버 예약자 리뷰 원고 생성기</div>', unsafe_allow_html=True)
 st.markdown(
-    '<div class="sub-title">업종, 고객 가이드, 말투를 선택하면 자연스러운 예약자 리뷰 원고를 한 번에 생성합니다.</div>',
+    """
+    <div class="top-card">
+        <div class="main-title">✅ 네이버 예약자 리뷰 원고 생성기</div>
+        <div class="sub-title">업종, 고객 가이드, 말투를 선택하면 자연스러운 예약자 리뷰 원고를 한 번에 생성합니다.</div>
+    </div>
+    """,
     unsafe_allow_html=True
 )
 
 left, right = st.columns([1, 1.25], gap="large")
 
-
-# =========================
-# 왼쪽 입력 UI
-# =========================
 with left:
     st.markdown('<div class="panel-title">⚙️ 생성 설정</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-caption">필요한 조건을 입력한 뒤 리뷰 생성 버튼을 눌러주세요.</div>', unsafe_allow_html=True)
 
     category_group = st.selectbox("업종 대분류 선택", list(CATEGORY_PATTERNS.keys()))
     category = st.text_input("상세 업종", value="고기집")
@@ -382,10 +283,7 @@ with left:
         value="알바생이 고기 직접 구워줌, 직원 친절, 화장실 깔끔, 재방문 의사, 가족 방문 좋음"
     )
 
-    must_include = st.text_input(
-        "필수 포함 키워드",
-        value=""
-    )
+    must_include = st.text_input("필수 포함 키워드", value="")
 
     forbidden = st.text_input(
         "금지 키워드 / 금지 표현",
@@ -402,20 +300,11 @@ with left:
     run_btn = col_run.button("🚀 리뷰 생성 시작", use_container_width=True)
     clear_btn = col_clear.button("🗑 결과 초기화", use_container_width=True)
 
-
-# =========================
-# 초기화
-# =========================
 if clear_btn:
     st.session_state.generated_results = []
     st.rerun()
 
-
-# =========================
-# 생성 로직 - API 1회 호출
-# =========================
 if run_btn:
-
     if not CLAUDE_API_KEY:
         st.error("CLAUDE_API_KEY를 입력해주세요.")
 
@@ -537,15 +426,35 @@ if run_btn:
         except Exception as e:
             st.error(f"오류: {str(e)}")
 
-
-# =========================
-# 오른쪽 결과 UI
-# =========================
 with right:
     st.markdown('<div class="panel-title">📝 생성 결과</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-caption">생성된 결과를 바로 복사해서 시트에 붙여넣을 수 있습니다.</div>', unsafe_allow_html=True)
 
     if st.session_state.generated_results:
         excel_ready = "\n".join(st.session_state.generated_results)
+        copy_text = json.dumps(excel_ready)
+
+        components.html(
+            f"""
+            <button onclick='navigator.clipboard.writeText({copy_text}); this.innerText="✅ 복사 완료";'
+                style="
+                    width:100%;
+                    height:48px;
+                    border:none;
+                    border-radius:15px;
+                    background:linear-gradient(90deg,#2563eb,#7c3aed,#db2777);
+                    color:white;
+                    font-size:15px;
+                    font-weight:900;
+                    cursor:pointer;
+                    margin-bottom:12px;
+                    box-shadow:0 12px 24px rgba(37,99,235,0.22);
+                ">
+                📋 전체 원고 복사하기
+            </button>
+            """,
+            height=64
+        )
 
         st.text_area(
             "📋 엑셀 붙여넣기용 전체 복사",
