@@ -243,8 +243,11 @@ st.set_page_config(page_title="예약자원고생성", layout="centered")
 if "generated_results" not in st.session_state:
     st.session_state.generated_results = []
 
-st.title("✅ 네이버 예약자 리뷰 원고 생성기")
-st.markdown("---")
+st.markdown('<div class="main-title">✅ 네이버 예약자 리뷰 원고 생성기</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="sub-title">업종, 고객 가이드, 말투를 선택하면 자연스러운 예약자 리뷰 원고를 한 번에 생성합니다.</div>',
+    unsafe_allow_html=True
+)
 
 
 # =========================
@@ -445,11 +448,21 @@ st.markdown("---")
 if st.session_state.generated_results:
     excel_ready = "\n".join(st.session_state.generated_results)
 
+    st.subheader("📋 엑셀 붙여넣기용")
     st.text_area(
-        "엑셀 붙여넣기용 전체 복사",
+        "아래 내용을 전체 복사해서 시트에 붙여넣으세요.",
         value=excel_ready,
-        height=300
+        height=320
     )
 
+    st.subheader("📝 생성된 리뷰 미리보기")
+
     for idx, text in enumerate(st.session_state.generated_results):
-        st.write(f"**{idx + 1}.** {text}")
+        st.markdown(
+            f"""
+            <div class="result-box">
+                <b>{idx + 1}.</b> {text}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
