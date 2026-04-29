@@ -365,7 +365,7 @@ with left:
     st.markdown('<div class="section-caption">필요한 조건을 입력한 뒤 리뷰 생성 버튼을 눌러주세요.</div>', unsafe_allow_html=True)
 
     category_group = st.selectbox("업종 대분류 선택", list(CATEGORY_PATTERNS.keys()))
-    category = st.text_input("상세 업종", value="고기집")
+    category = st.text_input("상세 업종", value="")
 
     situation = st.selectbox(
         "방문 상황 선택",
