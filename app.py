@@ -441,9 +441,9 @@ if run_btn:
                 WRITING_STYLES,
                 k=target_count
             )
-persona_keys = list(PERSONA_PROMPTS.keys())
-persona_cycle = (persona_keys * ((target_count // len(persona_keys)) + 1))[:target_count]
-random.shuffle(persona_cycle)
+            persona_keys = list(PERSONA_PROMPTS.keys())
+            persona_cycle = (persona_keys * ((target_count // len(persona_keys)) + 1))[:target_count]
+            random.shuffle(persona_cycle)
 
             
             final_prompt = f"""
