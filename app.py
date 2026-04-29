@@ -240,46 +240,6 @@ button[onclick*="clipboard"] {
 </style>
 """, unsafe_allow_html=True)
 
-.stButton > button {
-    background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899);
-    color: white;
-    font-weight: 900;
-    border-radius: 15px;
-    border: none;
-    box-shadow: 0 12px 24px rgba(124, 58, 237, 0.25);
-    transition: all 0.2s ease;
-}
-
-.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 16px 30px rgba(124, 58, 237, 0.35);
-}
-
-.stButton:nth-of-type(2) > button {
-    background: #f1f5f9;
-    color: #475569;
-    border: 1px solid #e2e8f0;
-    box-shadow: none;
-}
-
-button[onclick*="clipboard"] {
-    background: linear-gradient(90deg, #ec4899, #f43f5e);
-    color: white;
-    font-weight: 900;
-    border-radius: 15px;
-    border: none;
-    box-shadow: 0 10px 20px rgba(244, 63, 94, 0.3);
-}
-
-button[onclick*="clipboard"]:hover {
-    transform: translateY(-2px);
-}
-
-.stButton:nth-of-type(2) > button:hover {
-    background: #e2e8f0;
-}
-
-
 st.markdown(
     """
     <div class="top-card">
