@@ -399,11 +399,6 @@ with left:
         value="과장된 표현, 없는 메뉴명, 없는 서비스, 무조건 최고"
     )
 
-    selected_persona = st.selectbox(
-        "말투 선택",
-        list(PERSONA_PROMPTS.keys())
-    )
-
     col_run, col_clear = st.columns(2)
 
     run_btn = col_run.button("🚀 리뷰 생성 시작", use_container_width=True)
