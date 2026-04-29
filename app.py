@@ -198,9 +198,7 @@ st.markdown("""
 <style>
 .stApp {
     background:
-        radial-gradient(circle at top left, rgba(99,102,241,0.16), transparent 32%),
-        radial-gradient(circle at top right, rgba(14,165,233,0.14), transparent 30%),
-        linear-gradient(135deg, #f8fafc 0%, #eef2ff 48%, #ffffff 100%);
+        linear-gradient(135deg, #0f172a 0%, #111827 50%, #020617 100%);
 }
 
 .block-container {
