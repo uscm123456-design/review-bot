@@ -195,7 +195,6 @@ if "generated_results" not in st.session_state:
     st.session_state.generated_results = []
 
 st.markdown("""
-st.markdown("""
 <style>
 
 /* 전체 배경 */
