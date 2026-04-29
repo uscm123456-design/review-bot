@@ -197,8 +197,6 @@ if "generated_results" not in st.session_state:
 st.markdown("""
 st.markdown("""
 <style>
-st.markdown("""
-<style>
 
 /* 전체 배경 */
 .stApp {
@@ -217,11 +215,15 @@ st.markdown("""
     background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899);
     color: white;
     box-shadow: 0 12px 24px rgba(124, 58, 237, 0.25);
+    transition: all 0.2s ease;
 }
 
-/* hover */
 .stButton > button:hover {
     transform: translateY(-2px);
+}
+
+.stButton > button:active {
+    transform: scale(0.97);
 }
 
 /* 초기화 버튼 */
@@ -237,9 +239,6 @@ button[onclick*="clipboard"] {
 }
 
 </style>
-""", unsafe_allow_html=True)
-</style>
-""", unsafe_allow_html=True)
 """, unsafe_allow_html=True)
 
 .stButton > button {
