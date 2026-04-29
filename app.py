@@ -195,7 +195,10 @@ if "generated_results" not in st.session_state:
     st.session_state.generated_results = []
 
 st.markdown("""
+st.markdown("""
 <style>
+
+/* 🌈 전체 배경 */
 .stApp {
     background:
         radial-gradient(circle at top left, rgba(124,58,237,0.18), transparent 32%),
@@ -203,30 +206,34 @@ st.markdown("""
         linear-gradient(135deg, #faf5ff 0%, #f3e8ff 48%, #ffffff 100%);
 }
 
+/* 📦 전체 레이아웃 */
 .block-container {
     max-width: 1320px;
     padding-top: 2.2rem;
     padding-bottom: 3rem;
 }
 
+/* 🟣 메인 타이틀 */
 .main-title {
     font-size: 38px;
     font-weight: 950;
     margin-bottom: 8px;
     letter-spacing: -0.8px;
-    background: linear-gradient(90deg, #2563eb, #7c3aed, #db2777);
+    background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
+/* 서브 타이틀 */
 .sub-title {
     font-size: 15px;
     color: #64748b;
     margin-bottom: 24px;
 }
 
+/* 카드 */
 .top-card {
-    background: rgba(255, 255, 255, 0.78);
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(14px);
     border: 1px solid rgba(226, 232, 240, 0.9);
     border-radius: 24px;
@@ -235,20 +242,21 @@ st.markdown("""
     margin-bottom: 22px;
 }
 
+/* 제목 */
 .panel-title {
     font-size: 21px;
     font-weight: 900;
     margin-bottom: 16px;
-    letter-spacing: -0.3px;
 }
 
+/* 설명 */
 .section-caption {
     color: #64748b;
     font-size: 13px;
-    margin-top: -8px;
     margin-bottom: 16px;
 }
 
+/* 결과 박스 */
 .result-box {
     background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
     border: 1px solid #e2e8f0;
@@ -257,32 +265,60 @@ st.markdown("""
     margin-bottom: 11px;
     line-height: 1.65;
     font-size: 15px;
-    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.045);
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.05);
 }
 
+/* 안내 박스 */
 .info-box {
-    background: rgba(255,255,255,0.78);
-    border: 1px dashed #94a3b8;
+    background: rgba(255,255,255,0.8);
+    border: 1px dashed #c4b5fd;
     border-radius: 18px;
     padding: 22px;
     color: #64748b;
-    line-height: 1.7;
-    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.04);
 }
 
+/* 🔥 메인 버튼 (생성 버튼) */
 .stButton > button {
     height: 50px;
     border-radius: 15px;
     font-weight: 900;
     border: none;
-    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.14);
+    background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899);
+    color: white;
+    box-shadow: 0 12px 24px rgba(124, 58, 237, 0.25);
+    transition: all 0.2s ease;
 }
 
+/* hover */
 .stButton > button:hover {
-    transform: translateY(-1px);
-    transition: 0.15s ease;
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px rgba(124, 58, 237, 0.35);
 }
 
+/* 클릭 */
+.stButton > button:active {
+    transform: scale(0.97);
+}
+
+/* 🩶 두번째 버튼 (초기화) */
+.stButton:nth-of-type(2) > button {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    box-shadow: none;
+}
+
+/* 복사 버튼 (핑크 강조) */
+button[onclick*="clipboard"] {
+    background: linear-gradient(90deg, #ec4899, #f43f5e);
+    color: white;
+    font-weight: 900;
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 20px rgba(244, 63, 94, 0.3);
+}
+
+/* 입력창 */
 input, textarea {
     background-color: #ffffff !important;
     color: #111827 !important;
@@ -290,62 +326,28 @@ input, textarea {
     border-radius: 14px !important;
 }
 
-[data-testid="stNumberInput"] input {
-    background-color: #ffffff !important;
-    color: #111827 !important;
-    border: 1px solid #d1d5db !important;
-}
-
-[data-testid="stTextArea"] textarea {
-    background-color: #ffffff !important;
-    color: #111827 !important;
-    border: 1px solid #d1d5db !important;
-    min-height: 140px;
-}
-
-/* selectbox 전체 박스 */
+/* 셀렉트박스 */
 [data-testid="stSelectbox"] [data-baseweb="select"] {
     background-color: #ffffff !important;
     border: 1px solid #d1d5db !important;
     border-radius: 14px !important;
 }
 
-/* 선택된 값 영역 테두리 제거 */
+/* 선택값 테두리 제거 */
 [data-testid="stSelectbox"] [data-baseweb="tag"] {
     background: transparent !important;
     border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
 }
 
-/* 선택된 값 안쪽 텍스트 */
-[data-testid="stSelectbox"] [data-baseweb="tag"] span {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-}
-
-/* 내부 input 테두리/밑줄 제거 */
+/* 내부 input */
 [data-testid="stSelectbox"] input {
     border: none !important;
     box-shadow: none !important;
-    outline: none !important;
     background: transparent !important;
-    text-decoration: none !important;
 }
 
-/* 이상한 빨간 밑줄 제거 */
-[data-testid="stSelectbox"] * {
-    text-decoration: none !important;
-}
-
-
-hr {
-    margin-top: 10px;
-    margin-bottom: 18px;
-}
 </style>
+""", unsafe_allow_html=True)
 """, unsafe_allow_html=True)
 
 .stButton > button {
