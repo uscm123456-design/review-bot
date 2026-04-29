@@ -441,9 +441,20 @@ if run_btn:
                 WRITING_STYLES,
                 k=target_count
             )
+persona_keys = list(PERSONA_PROMPTS.keys())
+persona_cycle = (persona_keys * ((target_count // len(persona_keys)) + 1))[:target_count]
+random.shuffle(persona_cycle)
 
+            
             final_prompt = f"""
 너는 실제 방문자가 작성한 것처럼 자연스러운 네이버 예약자 리뷰 원고를 작성한다.
+
+[페르소나 순서]
+각 리뷰는 아래 순서의 페르소나를 하나씩 적용해서 작성한다.
+각 리뷰는 서로 다른 사람이 쓴 것처럼 말투와 표현을 다르게 한다.
+각 리뷰는 반드시 서로 다른 페르소나 스타일을 명확하게 반영한다.
+
+{chr(10).join([f"{i+1}. {p}" for i, p in enumerate(persona_cycle)])}
 
 [업종 대분류]
 {category_group}
@@ -466,8 +477,12 @@ if run_btn:
 [금지 키워드 / 금지 표현]
 {forbidden if forbidden else "없음"}
 
-[말투]
-{PERSONA_PROMPTS[selected_persona]}
+[페르소나 리스트]
+각 리뷰는 아래 페르소나 중 하나를 사용하여 작성한다.
+리뷰마다 서로 다른 사람이 작성한 것처럼 말투, 표현, 감정이 다르게 나오도록 한다.
+페르소나는 최대한 골고루 분배해서 사용한다.
+
+{chr(10).join([f"- {k}: {v}" for k, v in PERSONA_PROMPTS.items()])}
 
 [도입부 후보 리스트]
 {chr(10).join([f"- {s}" for s in selected_starts])}
@@ -504,6 +519,12 @@ if run_btn:
 - 장점 3개를 단순 나열하는 방식은 피한다.
 - 같은 도입부라도 뒤 문장 전개는 다르게 작성한다.
 - 전체 리뷰가 한 사람이 쓴 것처럼 보이지 않게 말투와 흐름을 섞는다.
+
+[중요 규칙 추가]
+- 모든 리뷰는 서로 다른 사람이 작성한 것처럼 자연스럽게 작성한다.
+- 같은 말투, 같은 표현이 반복되지 않도록 한다.
+- 동일한 페르소나가 연속으로 나오지 않도록 한다.
+
 """
 
             message = client.messages.create(
