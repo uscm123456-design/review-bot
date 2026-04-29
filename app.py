@@ -236,6 +236,69 @@ button[onclick*="clipboard"] {
     background: linear-gradient(90deg, #ec4899, #f43f5e);
     color: white;
 }
+/* 버튼 hover 고급 애니메이션 */
+.stButton > button {
+    position: relative;
+    overflow: hidden;
+}
+
+.stButton > button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 80%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.35),
+        transparent
+    );
+    transition: all 0.45s ease;
+}
+
+.stButton > button:hover::before {
+    left: 120%;
+}
+
+.stButton > button:hover {
+    transform: translateY(-3px) scale(1.01);
+}
+
+.stButton > button:active {
+    transform: scale(0.96);
+}
+
+/* 생성 중 로딩 박스 */
+.loading-card {
+    background: rgba(255,255,255,0.85);
+    border: 1px solid #ddd6fe;
+    border-radius: 18px;
+    padding: 18px 20px;
+    color: #6d28d9;
+    font-weight: 800;
+    box-shadow: 0 14px 32px rgba(124,58,237,0.12);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* 로딩 스피너 */
+.loader {
+    width: 18px;
+    height: 18px;
+    border: 3px solid #ddd6fe;
+    border-top: 3px solid #8b5cf6;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 </style>
 """, unsafe_allow_html=True)
