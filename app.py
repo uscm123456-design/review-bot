@@ -305,10 +305,14 @@ button[onclick*="clipboard"] {
 
 st.markdown(
     """
-    <div class="top-card">
-        <div class="main-title">✅ 네이버 예약자 리뷰 원고 생성기</div>
-        <div class="sub-title">업종, 고객 가이드, 말투를 선택하면 자연스러운 예약자 리뷰 원고를 한 번에 생성합니다.</div>
+    <div class="hero-card">
+    <div class="hero-badge">✨ AI 자동 생성</div>
+    <div class="hero-title">네이버 예약자 리뷰 원고 생성기</div>
+    <div class="hero-desc">
+        업종, 고객 가이드, 말투를 선택하면<br>
+        자연스러운 예약자 리뷰를 한 번에 생성합니다.
     </div>
+</div>
     """,
     unsafe_allow_html=True
 )
