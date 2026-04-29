@@ -198,7 +198,7 @@ st.markdown("""
 st.markdown("""
 <style>
 
-/* 🌈 전체 배경 */
+/*  전체 배경 */
 .stApp {
     background:
         radial-gradient(circle at top left, rgba(124,58,237,0.18), transparent 32%),
@@ -206,14 +206,14 @@ st.markdown("""
         linear-gradient(135deg, #faf5ff 0%, #f3e8ff 48%, #ffffff 100%);
 }
 
-/* 📦 전체 레이아웃 */
+/*  전체 레이아웃 */
 .block-container {
     max-width: 1320px;
     padding-top: 2.2rem;
     padding-bottom: 3rem;
 }
 
-/* 🟣 메인 타이틀 */
+/*  메인 타이틀 */
 .main-title {
     font-size: 38px;
     font-weight: 950;
