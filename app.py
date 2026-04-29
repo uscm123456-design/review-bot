@@ -379,7 +379,15 @@ if run_btn:
 
         with right:
             status_text = st.empty()
-            status_text.info(f"⏳ 리뷰 {target_count}개 생성 중입니다. 잠시만 기다려주세요...")
+            status_text.markdown(
+    f"""
+    <div class="loading-card">
+        <div class="loader"></div>
+        <div>리뷰 {target_count}개 생성 중입니다. 잠시만 기다려주세요...</div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
         try:
             selected_starts = random.choices(
