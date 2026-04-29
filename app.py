@@ -300,6 +300,43 @@ button[onclick*="clipboard"] {
     }
 }
 
+/* 히어로 카드 */
+.hero-card {
+    background: linear-gradient(135deg, #7c3aed, #a855f7, #ec4899);
+    border-radius: 26px;
+    padding: 32px 28px;
+    color: white;
+    box-shadow: 0 20px 60px rgba(124, 58, 237, 0.35);
+    margin-bottom: 22px;
+}
+
+/* 상단 뱃지 */
+.hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+/* 메인 타이틀 */
+.hero-title {
+    font-size: 34px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+}
+
+/* 설명 */
+.hero-desc {
+    font-size: 15px;
+    line-height: 1.6;
+    opacity: 0.95;
+}
+
+
 </style>
 """, unsafe_allow_html=True)
 
