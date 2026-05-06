@@ -393,7 +393,7 @@ with left:
     
     forbidden = st.text_input(
         "금지 키워드(,로 구분)",
-        value="과장된 표현, 없는 메뉴명, 없는 서비스, 무조건 최고"
+        value=""
     )
 
     col_run, col_clear = st.columns(2)
