@@ -395,11 +395,6 @@ with left:
     category_group = st.selectbox("업종 대분류 선택", list(CATEGORY_PATTERNS.keys()))
     category = st.text_input("상세 업종", value="")
 
-    situation = st.selectbox(
-        "방문 상황 선택",
-        list(CATEGORY_PATTERNS[category_group].keys())
-    )
-
     count = st.number_input(
         "생성할 리뷰 수",
         min_value=1,
@@ -463,13 +458,26 @@ if run_btn:
 )
 
         try:
-        
+
             selected_styles = random.choices(
                 WRITING_STYLES,
                 k=target_count
             )
+
+            all_situations = list(CATEGORY_PATTERNS[category_group].keys())
+
+            situation_cycle = (
+                all_situations * ((target_count // len(all_situations)) + 1)
+            )[:target_count]
+
+            random.shuffle(situation_cycle)
+
             persona_keys = list(PERSONA_PROMPTS.keys())
-            persona_cycle = (persona_keys * ((target_count // len(persona_keys)) + 1))[:target_count]
+
+            persona_cycle = (
+                persona_keys * ((target_count // len(persona_keys)) + 1)
+            )[:target_count]
+
             random.shuffle(persona_cycle)
 
             
@@ -489,8 +497,11 @@ if run_btn:
 [상세 업종]
 {category}
 
-[방문 상황]
-{situation}
+[방문 상황 분배]
+각 리뷰는 아래 방문 상황을 순서대로 하나씩 반영한다.
+단, 문장 시작을 방문 상황명 그대로 쓰지 말고 자연스럽게 녹여 쓴다.
+
+{chr(10).join([f"{i+1}. {s}" for i, s in enumerate(situation_cycle)])}
 
 [기본 업종별 작성 방향]
 {CATEGORY_RULES.get(category_group, CATEGORY_RULES["일반/범용"])}
