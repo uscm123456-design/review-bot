@@ -432,11 +432,7 @@ if run_btn:
 )
 
         try:
-            selected_starts = random.choices(
-                CATEGORY_PATTERNS[category_group][situation],
-                k=target_count
-            )
-
+        
             selected_styles = random.choices(
                 WRITING_STYLES,
                 k=target_count
@@ -484,11 +480,26 @@ if run_btn:
 
 {chr(10).join([f"- {k}: {v}" for k, v in PERSONA_PROMPTS.items()])}
 
-[도입부 후보 리스트]
-{chr(10).join([f"- {s}" for s in selected_starts])}
-
 [작성 방식 리스트]
 {chr(10).join([f"- {s}" for s in selected_styles])}
+
+[도입 방식 규칙]
+
+각 리뷰는 서로 다른 방식으로 시작한다.
+
+예시:
+- 방문 계기부터 시작
+- 바로 만족감부터 시작
+- 상황 설명부터 시작
+- 결과 이야기부터 시작
+- 직원 응대부터 시작
+- 혼잣말 느낌으로 시작
+- 비교 경험부터 시작
+- 짧은 감탄으로 시작
+- 바로 본론부터 시작
+- 이전 불편 경험부터 시작
+
+같은 도입 패턴 반복 금지.
 
 [작성 요청]
 리뷰를 총 {target_count}개 작성한다.
@@ -520,6 +531,19 @@ if run_btn:
 - 같은 도입부라도 뒤 문장 전개는 다르게 작성한다.
 - 전체 리뷰가 한 사람이 쓴 것처럼 보이지 않게 말투와 흐름을 섞는다.
 
+[도입 반복 금지 규칙]
+
+아래 패턴으로 반복 시작하지 않는다.
+
+- "처음 방문해봤는데"
+- "리뷰 보고 골랐는데"
+- "궁금해서 방문해봤는데"
+- "~했는데 ~좋았어요" 구조 반복
+- "후기가 좋은 이유가 있었네요"
+- "지인 추천으로 왔는데"
+
+같은 문장 구조가 연속으로 나오지 않게 한다.
+
 [중요 규칙 추가]
 - 모든 리뷰는 서로 다른 사람이 작성한 것처럼 자연스럽게 작성한다.
 - 같은 말투, 같은 표현이 반복되지 않도록 한다.
@@ -539,7 +563,7 @@ if run_btn:
                 message = client.messages.create(
                     model="claude-sonnet-4-6",
                     max_tokens=12000,
-                    temperature=0.9,
+                    temperature=1.0,
                     system=(
                         "당신은 자연스러운 네이버 예약자 리뷰 원고를 작성하는 전문가입니다. "
                         "과장 없이 실제 방문 후기처럼 작성합니다. "
@@ -570,6 +594,8 @@ if run_btn:
 - 다양한 연령대/성별 느낌 섞기
 - 이모티콘/ㅎㅎ/ㅋㅋ은 과하지 않게 자연스럽게 사용
 - 이전 리뷰들과 최대한 겹치지 않게 작성
+
+
 """
                         }
                     ]
