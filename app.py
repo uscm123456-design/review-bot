@@ -391,11 +391,6 @@ with left:
 
     must_include = st.text_input("필수 포함 키워드", value="")
 
-    forbidden = st.text_input(
-        "금지 키워드 / 금지 표현",
-        value="과장된 표현, 없는 메뉴명, 없는 서비스, 무조건 최고"
-    )
-
     col_run, col_clear = st.columns(2)
 
     run_btn = col_run.button("🚀 리뷰 생성 시작", use_container_width=True)
@@ -472,6 +467,12 @@ if run_btn:
 
 [금지 키워드 / 금지 표현]
 {forbidden if forbidden else "없음"}
+
+[금지 키워드 강제 규칙]
+- 위 금지 키워드나 금지 표현은 리뷰에 절대 포함하지 않는다.
+- 금지 키워드가 여러 개인 경우 쉼표, 콤마 기준으로 각각 금지어로 처리한다.
+- 금지 키워드와 비슷한 표현도 가능한 한 피한다.
+- 금지 키워드가 포함될 것 같으면 다른 표현으로 바꿔 작성한다.
 
 [페르소나 리스트]
 각 리뷰는 아래 페르소나 중 하나를 사용하여 작성한다.
