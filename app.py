@@ -4,6 +4,7 @@ import random
 import re
 import streamlit.components.v1 as components
 import json
+import time
 
 CLAUDE_API_KEY = st.secrets["CLAUDE_API_KEY"]
 
@@ -526,9 +527,18 @@ if run_btn:
 
 """
 
-           import time
+           
 
 all_reviews = []
+
+batch_size = 50
+total_count = 200
+
+for start in range(0, total_count, batch_size):
+
+    end = start + batch_size
+
+    all_reviews = []
 
 batch_size = 50
 total_count = 200
@@ -574,6 +584,14 @@ for start in range(0, total_count, batch_size):
             }
         ]
     )
+
+    result = message.content[0].text
+
+    all_reviews.append(result)
+
+    time.sleep(1)
+
+final_result = "\n".join(all_reviews)
 
     result = message.content[0].text
 
