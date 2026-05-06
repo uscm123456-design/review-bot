@@ -527,16 +527,38 @@ if run_btn:
 """
 
             message = client.messages.create(
-                model="claude-sonnet-4-6",
-                max_tokens=12000,
-                system="당신은 자연스러운 네이버 예약자 리뷰 원고를 작성하는 전문가입니다. 과장 없이 실제 방문 후기처럼 작성합니다.",
-                messages=[
-                    {
-                        "role": "user",
-                        "content": final_prompt
-                    }
-                ]
-            )
+    model="claude-sonnet-4-6",
+    max_tokens=24000,
+    temperature=0.9,
+    system=(
+        "당신은 자연스러운 네이버 예약자 리뷰 원고를 작성하는 전문가입니다. "
+        "과장 없이 실제 방문 후기처럼 작성합니다. "
+        "반드시 요청된 리뷰 개수를 모두 작성하세요. "
+        "중간에 생략하거나 요약하지 마세요. "
+        "각 리뷰는 독립적으로 작성하세요. "
+        "서로 다른 사람이 작성한 것처럼 말투와 표현을 다양하게 섞으세요. "
+        "문장이 반복되지 않도록 주의하세요."
+    ),
+    messages=[
+        {
+            "role": "user",
+            "content": f"""
+{final_prompt}
+
+[중요 작성 규칙]
+- 반드시 리뷰를 요청 개수만큼 전부 작성
+- 중간 생략 금지
+- 요약 금지
+- 번호 붙이지 말기
+- 서로 다른 말투 사용
+- 실제 방문자가 작성한 느낌으로 자연스럽게 작성
+- 문장 반복 최소화
+- 다양한 연령대/성별 느낌 섞기
+- 이모티콘/ㅎㅎ/ㅋㅋ은 과하지 않게 자연스럽게 사용
+"""
+        }
+    ]
+)
 
             raw_text = message.content[0].text.strip()
             new_reviews = clean_reviews(raw_text)
