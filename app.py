@@ -527,17 +527,6 @@ if run_btn:
 
 """
 
-           
-
-all_reviews = []
-
-batch_size = 50
-total_count = 200
-
-for start in range(0, total_count, batch_size):
-
-    end = start + batch_size
-
     all_reviews = []
 
 batch_size = 50
