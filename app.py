@@ -526,43 +526,44 @@ if run_btn:
 - 동일한 페르소나가 연속으로 나오지 않도록 한다.
 
 """
+            all_reviews = []
 
-    all_reviews = []
+            batch_size = 50
+            total_count = target_count
 
-batch_size = 50
-total_count = 200
+            for start in range(0, total_count, batch_size):
 
-for start in range(0, total_count, batch_size):
+                current_batch_size = min(batch_size, total_count - start)
+                end = start + current_batch_size
 
-    end = start + batch_size
-
-    message = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=12000,
-        temperature=0.9,
-        system=(
-            "당신은 자연스러운 네이버 예약자 리뷰 원고를 작성하는 전문가입니다. "
-            "과장 없이 실제 방문 후기처럼 작성합니다. "
-            "반드시 요청된 리뷰 개수를 모두 작성하세요. "
-            "중간에 생략하거나 요약하지 마세요. "
-            "각 리뷰는 독립적으로 작성하세요. "
-            "서로 다른 사람이 작성한 것처럼 말투와 표현을 다양하게 섞으세요. "
-            "문장이 반복되지 않도록 주의하세요."
-        ),
-        messages=[
-            {
-                "role": "user",
-                "content": f"""
+                message = client.messages.create(
+                    model="claude-sonnet-4-6",
+                    max_tokens=12000,
+                    temperature=0.9,
+                    system=(
+                        "당신은 자연스러운 네이버 예약자 리뷰 원고를 작성하는 전문가입니다. "
+                        "과장 없이 실제 방문 후기처럼 작성합니다. "
+                        "반드시 요청된 리뷰 개수를 모두 작성하세요. "
+                        "중간에 생략하거나 요약하지 마세요. "
+                        "각 리뷰는 독립적으로 작성하세요. "
+                        "서로 다른 사람이 작성한 것처럼 말투와 표현을 다양하게 섞으세요. "
+                        "문장이 반복되지 않도록 주의하세요."
+                    ),
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": f"""
 {final_prompt}
 
 [현재 작성할 리뷰 범위]
 {start + 1}번 ~ {end}번 리뷰 작성
 
 [중요 작성 규칙]
-- 반드시 리뷰 50개 전부 작성
+- 반드시 리뷰 {current_batch_size}개 전부 작성
 - 중간 생략 금지
 - 요약 금지
 - 번호 붙이지 말기
+- 한 줄에 리뷰 1개만 작성
 - 서로 다른 말투 사용
 - 실제 방문자가 작성한 느낌으로 자연스럽게 작성
 - 문장 반복 최소화
@@ -570,40 +571,29 @@ for start in range(0, total_count, batch_size):
 - 이모티콘/ㅎㅎ/ㅋㅋ은 과하지 않게 자연스럽게 사용
 - 이전 리뷰들과 최대한 겹치지 않게 작성
 """
-            }
-        ]
-    )
+                        }
+                    ]
+                )
 
-    result = message.content[0].text
+                raw_text = message.content[0].text.strip()
 
-    all_reviews.append(result)
+                batch_reviews = clean_reviews(raw_text)
 
-    time.sleep(1)
+                all_reviews.extend(batch_reviews)
 
-final_result = "\n".join(all_reviews)
+                time.sleep(1)
 
-    result = message.content[0].text
-
-    all_reviews.append(result)
-
-    time.sleep(1)
-
-final_result = "\n".join(all_reviews)
-
-            raw_text = message.content[0].text.strip()
-            new_reviews = clean_reviews(raw_text)
-
-            st.session_state.generated_results = new_reviews[:target_count]
+            st.session_state.generated_results = all_reviews[:target_count]
 
             with right:
                 status_text.success("✅ 생성 완료")
 
             if len(st.session_state.generated_results) < target_count:
                 st.warning(
-                    f"요청한 {target_count}개 중 {len(st.session_state.generated_results)}개만 생성됐습니다. "
-                    "리뷰 수를 줄이거나 max_tokens를 늘려보세요."
+                    f"요청한 {target_count}개 중 "
+                    f"{len(st.session_state.generated_results)}개만 생성됐습니다."
                 )
-
+   
         except Exception as e:
             st.error(f"오류: {str(e)}")
 
