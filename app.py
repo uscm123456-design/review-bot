@@ -136,9 +136,15 @@ def check_login():
     if not st.session_state.authenticated:
         st.stop()
 
+st.set_page_config(page_title="예약자원고생성", layout="wide")
+
+check_login()
+
 if st.sidebar.button("로그아웃"):
-    st.session_state.authenticated = False
+    st.session_state.clear()
     st.rerun()
+
+CATEGORY_PATTERNS = {
 
 
 CATEGORY_PATTERNS = {
