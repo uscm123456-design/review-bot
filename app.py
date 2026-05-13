@@ -20,7 +20,6 @@ if not APP_PASSWORD:
 
 
 def check_login():
-
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
 
@@ -29,59 +28,60 @@ def check_login():
 
     st.markdown("""
     <style>
-
     .stApp {
-        background: linear-gradient(
-            135deg,
-            #f8fafc 0%,
-            #eef2ff 45%,
-            #ffffff 100%
-        );
+        background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 55%, #ffffff 100%);
     }
 
-    .login-wrap {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 90vh;
+    [data-testid="stHeader"] {
+        background: transparent;
     }
 
-    .login-card {
-        width: 420px;
-        background: white;
-        padding: 42px;
-        border-radius: 24px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.12);
-        border: 1px solid #e5e7eb;
+    .block-container {
+        padding-top: 8rem;
+        max-width: 520px;
     }
 
     .login-title {
         text-align: center;
         font-size: 42px;
         font-weight: 900;
-        margin-bottom: 10px;
+        color: #111827;
+        margin-bottom: 8px;
     }
 
     .login-desc {
         text-align: center;
+        font-size: 15px;
         color: #6b7280;
-        margin-bottom: 24px;
+        margin-bottom: 26px;
     }
 
+    [data-testid="stVerticalBlock"] {
+        background: white;
+        border-radius: 24px;
+    }
+
+    .stTextInput input {
+        height: 54px;
+        border-radius: 14px;
+        font-size: 16px;
+    }
+
+    .stButton button {
+        width: 100%;
+        height: 54px;
+        border-radius: 14px;
+        border: none;
+        background: linear-gradient(90deg, #111827, #1f2937);
+        color: white;
+        font-size: 16px;
+        font-weight: 800;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-    st.markdown(
-        '<div class="login-wrap"><div class="login-card">',
-        unsafe_allow_html=True
-    )
-
-    st.markdown("""
-    <div class="login-title">🔐 로그인</div>
-    <div class="login-desc">
-        비밀번호를 입력하세요
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown('<div class="login-title">🔐 로그인</div>', unsafe_allow_html=True)
+    st.markdown('<div class="login-desc">비밀번호를 입력하세요</div>', unsafe_allow_html=True)
 
     password = st.text_input(
         "비밀번호",
@@ -91,18 +91,11 @@ def check_login():
     )
 
     if st.button("로그인"):
-
         if password == APP_PASSWORD:
             st.session_state.authenticated = True
             st.rerun()
-
         else:
             st.error("비밀번호가 틀렸습니다.")
-
-    st.markdown(
-        "</div></div>",
-        unsafe_allow_html=True
-    )
 
     st.stop()
 
