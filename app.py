@@ -7,6 +7,31 @@ import json
 import time
 
 CLAUDE_API_KEY = st.secrets["CLAUDE_API_KEY"]
+APP_PASSWORD = "uscm123456"
+
+APP_PASSWORD = st.secrets["APP_PASSWORD"]
+
+def check_login():
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+
+    if st.session_state.authenticated:
+        return True
+
+    st.title("🔐 로그인")
+    password = st.text_input("비밀번호를 입력하세요", type="password")
+
+    if st.button("로그인"):
+        if password == APP_PASSWORD:
+            st.session_state.authenticated = True
+            st.rerun()
+        else:
+            st.error("비밀번호가 틀렸습니다.")
+
+    st.stop()
+
+check_login()
+
 
 CATEGORY_PATTERNS = {
     "음식점/카페": {
