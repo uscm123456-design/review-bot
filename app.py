@@ -22,8 +22,89 @@ def check_login():
     if st.session_state.authenticated:
         return
 
-    st.title("🔐 로그인")
-    password = st.text_input("비밀번호를 입력하세요", type="password")
+    st.markdown("""
+    <style>
+    .stApp {
+        background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 45%, #ffffff 100%);
+    }
+
+    [data-testid="stHeader"] {
+        background: transparent;
+    }
+
+    .block-container {
+        padding-top: 0rem;
+        max-width: 100%;
+    }
+
+    .login-wrap {
+        min-height: 88vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-card {
+        width: 420px;
+        background: rgba(255,255,255,0.92);
+        border: 1px solid #e5e7eb;
+        border-radius: 24px;
+        padding: 42px 38px;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+        text-align: center;
+    }
+
+    .login-title {
+        font-size: 42px;
+        font-weight: 900;
+        color: #111827;
+        margin-bottom: 10px;
+    }
+
+    .login-desc {
+        color: #4b5563;
+        font-size: 15px;
+        margin-bottom: 26px;
+    }
+
+    .stTextInput > div > div > input {
+        height: 52px;
+        border-radius: 14px;
+        font-size: 16px;
+    }
+
+    .stButton > button {
+        width: 100%;
+        height: 54px;
+        border-radius: 14px;
+        background: linear-gradient(90deg, #111827, #1e293b);
+        color: white;
+        font-weight: 800;
+        font-size: 16px;
+        border: none;
+        margin-top: 8px;
+    }
+
+    .stButton > button:hover {
+        background: linear-gradient(90deg, #1e293b, #334155);
+        color: white;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="login-wrap"><div class="login-card">', unsafe_allow_html=True)
+
+    st.markdown("""
+        <div class="login-title">🔐 로그인</div>
+        <div class="login-desc">비밀번호를 입력하세요</div>
+    """, unsafe_allow_html=True)
+
+    password = st.text_input(
+        "비밀번호",
+        type="password",
+        label_visibility="collapsed",
+        placeholder="비밀번호"
+    )
 
     if st.button("로그인"):
         if password == APP_PASSWORD:
@@ -32,9 +113,9 @@ def check_login():
         else:
             st.error("비밀번호가 틀렸습니다.")
 
-    st.stop()
+    st.markdown('</div></div>', unsafe_allow_html=True)
 
-check_login()
+    st.stop()
 
 
 CATEGORY_PATTERNS = {
