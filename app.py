@@ -29,7 +29,10 @@ def check_login():
     st.markdown("""
     <style>
     .stApp {
-        background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 55%, #ffffff 100%);
+        background:
+            radial-gradient(circle at top left, rgba(124,58,237,0.18), transparent 32%),
+            radial-gradient(circle at bottom right, rgba(236,72,153,0.13), transparent 30%),
+            linear-gradient(135deg, #f8fafc 0%, #eef2ff 48%, #ffffff 100%);
     }
 
     [data-testid="stHeader"] {
@@ -37,57 +40,101 @@ def check_login():
     }
 
     .block-container {
-        padding-top: 8rem;
-        max-width: 520px;
+        max-width: 460px;
+        padding-top: 12rem;
+    }
+
+    .login-brand {
+        text-align: center;
+        margin-bottom: 18px;
+    }
+
+    .login-badge {
+        display: inline-block;
+        padding: 7px 14px;
+        border-radius: 999px;
+        background: rgba(124,58,237,0.10);
+        color: #6d28d9;
+        font-size: 13px;
+        font-weight: 800;
+        margin-bottom: 18px;
+        border: 1px solid rgba(124,58,237,0.18);
     }
 
     .login-title {
-        text-align: center;
-        font-size: 42px;
-        font-weight: 900;
-        color: #111827;
-        margin-bottom: 8px;
+        font-size: 44px;
+        font-weight: 950;
+        letter-spacing: -1.2px;
+        color: #0f172a;
+        margin-bottom: 10px;
     }
 
     .login-desc {
-        text-align: center;
+        color: #64748b;
         font-size: 15px;
-        color: #6b7280;
-        margin-bottom: 26px;
+        line-height: 1.6;
+        margin-bottom: 32px;
     }
 
-    [data-testid="stVerticalBlock"] {
-        background: white;
-        border-radius: 24px;
-    }
-
-    .stTextInput input {
-        height: 54px;
-        border-radius: 14px;
+    [data-testid="stTextInput"] input {
+        height: 56px;
+        border-radius: 16px;
+        border: 1px solid #dbeafe;
+        background: rgba(255,255,255,0.88);
         font-size: 16px;
+        padding-left: 16px;
+        box-shadow: 0 10px 28px rgba(15,23,42,0.06);
     }
 
-    .stButton button {
+    [data-testid="stTextInput"] input:focus {
+        border-color: #8b5cf6;
+        box-shadow: 0 0 0 4px rgba(139,92,246,0.16);
+    }
+
+    .stButton > button {
         width: 100%;
-        height: 54px;
-        border-radius: 14px;
+        height: 56px;
+        border-radius: 16px;
         border: none;
-        background: linear-gradient(90deg, #111827, #1f2937);
+        background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899);
         color: white;
         font-size: 16px;
-        font-weight: 800;
+        font-weight: 900;
+        box-shadow: 0 18px 36px rgba(124,58,237,0.28);
+        transition: all 0.18s ease;
+    }
+
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        color: white;
+        box-shadow: 0 24px 48px rgba(124,58,237,0.34);
+    }
+
+    .login-footer {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 12px;
+        margin-top: 28px;
     }
     </style>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="login-title">🔐 로그인</div>', unsafe_allow_html=True)
-    st.markdown('<div class="login-desc">비밀번호를 입력하세요</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="login-brand">
+        <div class="login-badge">AI REVIEW GENERATOR</div>
+        <div class="login-title">🔐 로그인</div>
+        <div class="login-desc">
+            예약자 리뷰 원고 생성기를 사용하려면<br>
+            관리자 비밀번호를 입력해주세요.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
     password = st.text_input(
         "비밀번호",
         type="password",
         label_visibility="collapsed",
-        placeholder="비밀번호 입력"
+        placeholder="관리자 비밀번호"
     )
 
     if st.button("로그인"):
@@ -96,6 +143,11 @@ def check_login():
             st.rerun()
         else:
             st.error("비밀번호가 틀렸습니다.")
+
+    st.markdown(
+        '<div class="login-footer">© AI Review Generator. Private Access Only.</div>',
+        unsafe_allow_html=True
+    )
 
     st.stop()
 
