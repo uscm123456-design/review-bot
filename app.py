@@ -16,133 +16,27 @@ if not APP_PASSWORD:
     st.stop()
 
 def check_login():
-
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
 
-    # 이미 로그인된 경우
     if st.session_state.authenticated:
         return
 
-    # CSS
-    st.markdown("""
-    <style>
-    .stApp {
-        background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 45%, #ffffff 100%);
-    }
+    st.title("🔐 로그인")
+    password = st.text_input("비밀번호를 입력하세요", type="password")
 
-    [data-testid="stHeader"] {
-        background: transparent;
-    }
+    if st.button("로그인"):
+        if password == APP_PASSWORD:
+            st.session_state.authenticated = True
+            st.rerun()
+        else:
+            st.error("비밀번호가 틀렸습니다.")
 
-    .block-container {
-        padding-top: 0rem;
-        max-width: 100%;
-    }
-
-    .login-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 90vh;
-    }
-
-    .login-card {
-        width: 430px;
-        padding: 45px 40px;
-        border-radius: 24px;
-        background: rgba(255,255,255,0.95);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.12);
-        border: 1px solid #e5e7eb;
-    }
-
-    .login-title {
-        text-align: center;
-        font-size: 42px;
-        font-weight: 900;
-        margin-bottom: 12px;
-        color: #111827;
-    }
-
-    .login-desc {
-        text-align: center;
-        color: #6b7280;
-        margin-bottom: 28px;
-        font-size: 15px;
-    }
-
-    .stTextInput input {
-        height: 54px;
-        border-radius: 14px;
-        font-size: 16px;
-    }
-
-    .stButton button {
-        width: 100%;
-        height: 54px;
-        border-radius: 14px;
-        border: none;
-        background: linear-gradient(90deg, #111827, #1f2937);
-        color: white;
-        font-size: 16px;
-        font-weight: 800;
-    }
-
-    .stButton button:hover {
-        background: linear-gradient(90deg, #1f2937, #374151);
-        color: white;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    # 중앙 정렬용
-    left, center, right = st.columns([1, 1.2, 1])
-
-    with center:
-
-        st.markdown("""
-        <div class="login-container">
-            <div class="login-card">
-                <div class="login-title">🔐 로그인</div>
-                <div class="login-desc">
-                    비밀번호를 입력하세요
-                </div>
-        """, unsafe_allow_html=True)
-
-        password = st.text_input(
-            "비밀번호",
-            type="password",
-            label_visibility="collapsed",
-            placeholder="비밀번호 입력"
-        )
-
-        login_btn = st.button("로그인")
-
-        if login_btn:
-
-            if password == APP_PASSWORD:
-                st.session_state.authenticated = True
-                st.rerun()
-
-            else:
-                st.error("비밀번호가 틀렸습니다.")
-
-        st.markdown("""
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # 로그인 안 된 경우만 여기서 멈춤
-    if not st.session_state.authenticated:
-        st.stop()
-
-st.set_page_config(page_title="예약자원고생성", layout="wide")
+    st.stop()
 
 check_login()
 
-if st.sidebar.button("로그아웃"):
-    st.session_state.clear()
-    st.rerun()
+check_login()
 
 CATEGORY_PATTERNS = {
 
