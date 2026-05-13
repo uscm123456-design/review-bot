@@ -102,10 +102,6 @@ def check_login():
 
 check_login()
 
-if st.sidebar.button("로그아웃"):
-    st.session_state.clear()
-    st.rerun()
-
 CATEGORY_PATTERNS = {
     "음식점/카페": {
         "예약/방문": ["예약하고 방문했는데", "주말이라 미리 예약하고 오길 잘했네요", "예약 시간 맞춰 갔더니 바로 안내받았어요", "미리 예약해두고 방문했는데"],
