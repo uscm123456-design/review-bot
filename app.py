@@ -134,7 +134,7 @@ def check_login():
 
     st.markdown("""
     <div class="login-brand">
-        <div class="login-badge">AI 리뷰 생성</div>
+        <div class="login-badge">USCM</div>
         <div class="login-title">로그인</div>
         <div class="login-desc">
             원고 생성기를 사용하려면<br>
