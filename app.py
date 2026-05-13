@@ -7,9 +7,12 @@ import json
 import time
 
 CLAUDE_API_KEY = st.secrets["CLAUDE_API_KEY"]
-APP_PASSWORD = "uscm123456"
 
-APP_PASSWORD = st.secrets["APP_PASSWORD"]
+APP_PASSWORD = st.secrets.get("APP_PASSWORD")
+
+if not APP_PASSWORD:
+    st.error("APP_PASSWORD를 secrets에 추가해주세요.")
+    st.stop()
 
 def check_login():
     if "authenticated" not in st.session_state:
@@ -28,7 +31,7 @@ def check_login():
         else:
             st.error("비밀번호가 틀렸습니다.")
 
-    st.stop()
+    st.set_page_config(page_title="예약자원고생성", layout="wide")
 
 check_login()
 
