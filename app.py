@@ -121,10 +121,10 @@ def check_login():
 
     st.markdown("""
     <div class="login-brand">
-        <div class="login-badge">AI REVIEW GENERATOR</div>
-        <div class="login-title">🔐 로그인</div>
+        <div class="login-badge">AI 리뷰 생성</div>
+        <div class="login-title">로그인</div>
         <div class="login-desc">
-            예약자 리뷰 원고 생성기를 사용하려면<br>
+            원고 생성기를 사용하려면<br>
             관리자 비밀번호를 입력해주세요.
         </div>
     </div>
@@ -134,7 +134,7 @@ def check_login():
         "비밀번호",
         type="password",
         label_visibility="collapsed",
-        placeholder="관리자 비밀번호"
+        placeholder=""
     )
 
     if st.button("로그인"):
