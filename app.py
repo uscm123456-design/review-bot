@@ -76,17 +76,26 @@ def check_login():
         margin-bottom: 32px;
     }
 
-    [data-testid="stTextInput"] input {
-    height: 56px;
-    line-height: 56px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+   [data-testid="stTextInput"] div {
+    align-items: center;
+}
+
+[data-testid="stTextInput"] input {
+    height: 56px !important;
+    min-height: 56px !important;
+
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    padding-left: 16px !important;
+
+    line-height: 56px !important;
 
     border-radius: 16px;
     border: 1px solid #dbeafe;
     background: rgba(255,255,255,0.88);
+
     font-size: 16px;
-    padding-left: 16px;
+
     box-shadow: 0 10px 28px rgba(15,23,42,0.06);
 }
 
