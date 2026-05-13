@@ -77,14 +77,18 @@ def check_login():
     }
 
     [data-testid="stTextInput"] input {
-        height: 56px;
-        border-radius: 16px;
-        border: 1px solid #dbeafe;
-        background: rgba(255,255,255,0.88);
-        font-size: 16px;
-        padding-left: 16px;
-        box-shadow: 0 10px 28px rgba(15,23,42,0.06);
-    }
+    height: 56px;
+    line-height: 56px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+    border-radius: 16px;
+    border: 1px solid #dbeafe;
+    background: rgba(255,255,255,0.88);
+    font-size: 16px;
+    padding-left: 16px;
+    box-shadow: 0 10px 28px rgba(15,23,42,0.06);
+}
 
     [data-testid="stTextInput"] input:focus {
         border-color: #8b5cf6;
