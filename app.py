@@ -16,12 +16,15 @@ if not APP_PASSWORD:
     st.stop()
 
 def check_login():
+
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
 
+    # 이미 로그인된 경우
     if st.session_state.authenticated:
         return
 
+    # CSS
     st.markdown("""
     <style>
     .stApp {
@@ -37,86 +40,101 @@ def check_login():
         max-width: 100%;
     }
 
-    .login-wrap {
-        min-height: 88vh;
+    .login-container {
         display: flex;
         justify-content: center;
         align-items: center;
+        min-height: 90vh;
     }
 
     .login-card {
-        width: 420px;
-        background: rgba(255,255,255,0.92);
-        border: 1px solid #e5e7eb;
+        width: 430px;
+        padding: 45px 40px;
         border-radius: 24px;
-        padding: 42px 38px;
-        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
-        text-align: center;
+        background: rgba(255,255,255,0.95);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+        border: 1px solid #e5e7eb;
     }
 
     .login-title {
+        text-align: center;
         font-size: 42px;
         font-weight: 900;
+        margin-bottom: 12px;
         color: #111827;
-        margin-bottom: 10px;
     }
 
     .login-desc {
-        color: #4b5563;
+        text-align: center;
+        color: #6b7280;
+        margin-bottom: 28px;
         font-size: 15px;
-        margin-bottom: 26px;
     }
 
-    .stTextInput > div > div > input {
-        height: 52px;
+    .stTextInput input {
+        height: 54px;
         border-radius: 14px;
         font-size: 16px;
     }
 
-    .stButton > button {
+    .stButton button {
         width: 100%;
         height: 54px;
         border-radius: 14px;
-        background: linear-gradient(90deg, #111827, #1e293b);
-        color: white;
-        font-weight: 800;
-        font-size: 16px;
         border: none;
-        margin-top: 8px;
+        background: linear-gradient(90deg, #111827, #1f2937);
+        color: white;
+        font-size: 16px;
+        font-weight: 800;
     }
 
-    .stButton > button:hover {
-        background: linear-gradient(90deg, #1e293b, #334155);
+    .stButton button:hover {
+        background: linear-gradient(90deg, #1f2937, #374151);
         color: white;
     }
     </style>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="login-wrap"><div class="login-card">', unsafe_allow_html=True)
+    # 중앙 정렬용
+    left, center, right = st.columns([1, 1.2, 1])
 
-    st.markdown("""
-        <div class="login-title">🔐 로그인</div>
-        <div class="login-desc">비밀번호를 입력하세요</div>
-    """, unsafe_allow_html=True)
+    with center:
 
-    password = st.text_input(
-        "비밀번호",
-        type="password",
-        label_visibility="collapsed",
-        placeholder="비밀번호"
-    )
+        st.markdown("""
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-title">🔐 로그인</div>
+                <div class="login-desc">
+                    비밀번호를 입력하세요
+                </div>
+        """, unsafe_allow_html=True)
 
-    if st.button("로그인"):
-        if password == APP_PASSWORD:
-            st.session_state.authenticated = True
-            st.rerun()
-        else:
-            st.error("비밀번호가 틀렸습니다.")
+        password = st.text_input(
+            "비밀번호",
+            type="password",
+            label_visibility="collapsed",
+            placeholder="비밀번호 입력"
+        )
 
-    st.markdown('</div></div>', unsafe_allow_html=True)
+        login_btn = st.button("로그인")
 
-    st.stop()
+        if login_btn:
 
+            if password == APP_PASSWORD:
+                st.session_state.authenticated = True
+                st.rerun()
+
+            else:
+                st.error("비밀번호가 틀렸습니다.")
+
+        st.markdown("""
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # 로그인 안 된 경우만 여기서 멈춤
+    if not st.session_state.authenticated:
+        st.stop()
 
 CATEGORY_PATTERNS = {
     "음식점/카페": {
