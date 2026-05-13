@@ -9,34 +9,109 @@ import time
 CLAUDE_API_KEY = st.secrets["CLAUDE_API_KEY"]
 APP_PASSWORD = st.secrets.get("APP_PASSWORD")
 
-st.set_page_config(page_title="예약자원고생성", layout="wide")
+st.set_page_config(
+    page_title="예약자원고생성",
+    layout="wide"
+)
 
 if not APP_PASSWORD:
     st.error("APP_PASSWORD를 secrets에 추가해주세요.")
     st.stop()
 
+
 def check_login():
+
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
 
     if st.session_state.authenticated:
         return
 
-    st.title("🔐 로그인")
-    password = st.text_input("비밀번호를 입력하세요", type="password")
+    st.markdown("""
+    <style>
+
+    .stApp {
+        background: linear-gradient(
+            135deg,
+            #f8fafc 0%,
+            #eef2ff 45%,
+            #ffffff 100%
+        );
+    }
+
+    .login-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+    }
+
+    .login-card {
+        width: 420px;
+        background: white;
+        padding: 42px;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+        border: 1px solid #e5e7eb;
+    }
+
+    .login-title {
+        text-align: center;
+        font-size: 42px;
+        font-weight: 900;
+        margin-bottom: 10px;
+    }
+
+    .login-desc {
+        text-align: center;
+        color: #6b7280;
+        margin-bottom: 24px;
+    }
+
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown(
+        '<div class="login-wrap"><div class="login-card">',
+        unsafe_allow_html=True
+    )
+
+    st.markdown("""
+    <div class="login-title">🔐 로그인</div>
+    <div class="login-desc">
+        비밀번호를 입력하세요
+    </div>
+    """, unsafe_allow_html=True)
+
+    password = st.text_input(
+        "비밀번호",
+        type="password",
+        label_visibility="collapsed",
+        placeholder="비밀번호 입력"
+    )
 
     if st.button("로그인"):
+
         if password == APP_PASSWORD:
             st.session_state.authenticated = True
             st.rerun()
+
         else:
             st.error("비밀번호가 틀렸습니다.")
 
+    st.markdown(
+        "</div></div>",
+        unsafe_allow_html=True
+    )
+
     st.stop()
 
-check_login()
 
 check_login()
+
+if st.sidebar.button("로그아웃"):
+    st.session_state.clear()
+    st.rerun()
 
 CATEGORY_PATTERNS = {
 
