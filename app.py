@@ -8,7 +8,7 @@ import time
 
 CLAUDE_API_KEY = st.secrets["CLAUDE_API_KEY"]
 
-APP_PASSWORD = st.secrets.get("uscm123456")
+APP_PASSWORD = st.secrets.get("0915")
 
 if not APP_PASSWORD:
     st.error("APP_PASSWORD를 secrets에 추가해주세요.")
