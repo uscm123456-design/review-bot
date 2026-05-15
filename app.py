@@ -676,7 +676,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 if menu == "✍️ 원고 생성":
-    left, right = st.columns([1, 1.25], gap="large")
+        left, right = st.columns([1, 1.25], gap="large")
 
         with left:
             st.markdown('<div class="panel-title">⚙️ 생성 설정</div>', unsafe_allow_html=True)
