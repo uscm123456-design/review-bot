@@ -733,7 +733,7 @@ if menu == "✍️ 원고 생성":
         st.session_state.generated_results = []
         st.rerun()
 
-            if run_btn:
+    if run_btn:
         if not CLAUDE_API_KEY:
             st.error("CLAUDE_API_KEY를 입력해주세요.")
 
