@@ -729,11 +729,11 @@ if menu == "✍️ 원고 생성":
     run_btn = col_run.button("🚀 리뷰 생성 시작", use_container_width=True)
     clear_btn = col_clear.button("🗑 결과 초기화", use_container_width=True)
 
-if clear_btn:
+    if clear_btn:
     st.session_state.generated_results = []
     st.rerun()
 
-if run_btn:
+    if run_btn:
     if not CLAUDE_API_KEY:
         st.error("CLAUDE_API_KEY를 입력해주세요.")
 
