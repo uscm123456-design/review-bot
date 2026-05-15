@@ -519,6 +519,16 @@ if "generated_results" not in st.session_state:
 st.markdown("""
 <style>
 
+/* 사이드바 폭 */
+section[data-testid="stSidebar"] {
+    width: 220px !important;
+    min-width: 220px !important;
+
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(18px);
+    border-right: 1px solid rgba(226,232,240,0.7);
+}
+
 /* 전체 배경 */
 .stApp {
     background:
