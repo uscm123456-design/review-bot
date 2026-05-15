@@ -676,20 +676,20 @@ st.markdown(
     unsafe_allow_html=True
 )
 if menu == "✍️ 원고 생성":
-left, right = st.columns([1, 1.25], gap="large")
+    left, right = st.columns([1, 1.25], gap="large")
 
-    with left:
-        st.markdown('<div class="panel-title">⚙️ 생성 설정</div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-caption">필요한 조건을 입력한 뒤 리뷰 생성 버튼을 눌러주세요.</div>', unsafe_allow_html=True)
+        with left:
+            st.markdown('<div class="panel-title">⚙️ 생성 설정</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-caption">필요한 조건을 입력한 뒤 리뷰 생성 버튼을 눌러주세요.</div>', unsafe_allow_html=True)
 
-        category_group = st.selectbox("업종 대분류 선택", list(CATEGORY_PATTERNS.keys()))
-        category = st.text_input("상세 업종", value="")
+            category_group = st.selectbox("업종 대분류 선택", list(CATEGORY_PATTERNS.keys()))
+            category = st.text_input("상세 업종", value="")
 
-        count = st.number_input(
-            "생성할 리뷰 수",
-            min_value=1,
-            max_value=200,
-            value=10
+            count = st.number_input(
+                "생성할 리뷰 수",
+                min_value=1,
+                max_value=200,
+                value=10
         )
 
     col1, col2 = st.columns(2)
