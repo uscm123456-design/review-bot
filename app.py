@@ -645,9 +645,20 @@ with left:
         max_len = st.number_input("최대 글자수", value=200)
 
     guide = st.text_area(
-        "고객 가이드 / 업체 특장점",
-        value="알바생이 고기 직접 구워줌, 직원 친절, 화장실 깔끔, 재방문 의사, 가족 방문 좋음"
-    )
+    "고객 가이드 / 업체 특장점",
+    value="",
+    height=300,
+    placeholder="""
+예시)
+- 직원이 직접 구워줌
+- 가족 외식 많음
+- 주차 편함
+- 매장 청결
+- 소수정예 수업
+- 상담 꼼꼼
+- 재방문율 높음
+"""
+)
 
     must_include = st.text_input("필수 포함 키워드", value="")
     
