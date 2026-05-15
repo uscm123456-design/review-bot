@@ -730,34 +730,34 @@ if menu == "✍️ 원고 생성":
     clear_btn = col_clear.button("🗑 결과 초기화", use_container_width=True)
 
     if clear_btn:
-    st.session_state.generated_results = []
-    st.rerun()
+        st.session_state.generated_results = []
+        st.rerun()
 
-    if run_btn:
-    if not CLAUDE_API_KEY:
-        st.error("CLAUDE_API_KEY를 입력해주세요.")
+            if run_btn:
+        if not CLAUDE_API_KEY:
+            st.error("CLAUDE_API_KEY를 입력해주세요.")
 
-    elif not guide.strip():
-        st.error("고객 가이드 또는 업체 장점을 입력해주세요.")
+        elif not guide.strip():
+            st.error("고객 가이드 또는 업체 장점을 입력해주세요.")
 
-    elif min_len > max_len:
-        st.error("최소 글자수가 최대 글자수보다 클 수 없습니다.")
+        elif min_len > max_len:
+            st.error("최소 글자수가 최대 글자수보다 클 수 없습니다.")
 
-    else:
-        client = Anthropic(api_key=CLAUDE_API_KEY)
-        target_count = int(count)
+        else:
+            client = Anthropic(api_key=CLAUDE_API_KEY)
+            target_count = int(count)
 
-        with right:
-            status_text = st.empty()
-            status_text.markdown(
-    f"""
-    <div class="loading-card">
-        <div class="loader"></div>
-        <div>리뷰 {target_count}개 생성 중입니다. 잠시만 기다려주세요...</div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+            with right:
+                status_text = st.empty()
+                status_text.markdown(
+                    f"""
+                    <div class="loading-card">
+                        <div class="loader"></div>
+                        <div>리뷰 {target_count}개 생성 중입니다. 잠시만 기다려주세요...</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
         try:
 
