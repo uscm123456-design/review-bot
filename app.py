@@ -22,13 +22,14 @@ def init_db():
     cur = conn.cursor()
 
     cur.execute("""
-        CREATE TABLE IF NOT EXISTS reviews (
+        CREATE TABLE IF NOT EXISTS review_batches (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             created_at TEXT,
             category_group TEXT,
             category TEXT,
             guide TEXT,
-            review_text TEXT
+            review_count INTEGER,
+            reviews_text TEXT
         )
     """)
 
@@ -36,27 +37,30 @@ def init_db():
     conn.close()
 
 
-def save_reviews(category_group, category, guide, reviews):
+def save_review_batch(category_group, category, guide, reviews):
     conn = sqlite3.connect("reviews.db")
     cur = conn.cursor()
 
-    for review in reviews:
-        cur.execute("""
-            INSERT INTO reviews (
-                created_at,
-                category_group,
-                category,
-                guide,
-                review_text
-            )
-            VALUES (?, ?, ?, ?, ?)
-        """, (
-            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    reviews_text = "\n".join(reviews)
+
+    cur.execute("""
+        INSERT INTO review_batches (
+            created_at,
             category_group,
             category,
             guide,
-            review
-        ))
+            review_count,
+            reviews_text
+        )
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        category_group,
+        category,
+        guide,
+        len(reviews),
+        reviews_text
+    ))
 
     conn.commit()
     conn.close()
@@ -951,7 +955,7 @@ if run_btn:
 
             st.session_state.generated_results = all_reviews[:target_count]
 
-            save_reviews(
+            save_review_batch(
     category_group,
     category,
     guide,
@@ -1033,29 +1037,26 @@ st.markdown("## 📚 저장된 원고")
 
 conn = sqlite3.connect("reviews.db")
 
-saved_reviews = conn.execute("""
-    SELECT created_at, category_group, category, review_text
-    FROM reviews
+saved_batches = conn.execute("""
+    SELECT id, created_at, category_group, category, review_count, reviews_text
+    FROM review_batches
     ORDER BY id DESC
     LIMIT 100
 """).fetchall()
 
 conn.close()
 
-for row in saved_reviews:
-    st.markdown(f"""
-    <div style="
-        background:white;
-        padding:14px;
-        border-radius:12px;
-        margin-bottom:10px;
-        border:1px solid #eee;
-    ">
-        <div style="font-size:12px;color:gray;">
-            {row[0]} | {row[1]} | {row[2]}
-        </div>
-        <div style="margin-top:6px;">
-            {row[3]}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+if not saved_batches:
+    st.info("저장된 원고가 없습니다.")
+
+else:
+    for row in saved_batches:
+        batch_id, created_at, category_group, category, review_count, reviews_text = row
+
+        with st.expander(f"{created_at} | {category_group} | {category} | {review_count}개"):
+            st.text_area(
+                "전체 원고",
+                value=reviews_text,
+                height=300,
+                key=f"batch_{batch_id}"
+            )
