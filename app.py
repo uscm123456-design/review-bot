@@ -6,6 +6,10 @@ import streamlit.components.v1 as components
 import json
 import time
 
+import sqlite3
+from datetime import datetime
+
+
 CLAUDE_API_KEY = st.secrets["CLAUDE_API_KEY"]
 APP_PASSWORD = st.secrets.get("APP_PASSWORD")
 
@@ -13,6 +17,52 @@ st.set_page_config(
     page_title="예약자원고생성",
     layout="wide"
 )
+def init_db():
+    conn = sqlite3.connect("reviews.db")
+    cur = conn.cursor()
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS reviews (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            created_at TEXT,
+            category_group TEXT,
+            category TEXT,
+            guide TEXT,
+            review_text TEXT
+        )
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+def save_reviews(category_group, category, guide, reviews):
+    conn = sqlite3.connect("reviews.db")
+    cur = conn.cursor()
+
+    for review in reviews:
+        cur.execute("""
+            INSERT INTO reviews (
+                created_at,
+                category_group,
+                category,
+                guide,
+                review_text
+            )
+            VALUES (?, ?, ?, ?, ?)
+        """, (
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            category_group,
+            category,
+            guide,
+            review
+        ))
+
+    conn.commit()
+    conn.close()
+
+
+init_db()
 
 if not APP_PASSWORD:
     st.error("APP_PASSWORD를 secrets에 추가해주세요.")
@@ -453,9 +503,6 @@ def clean_reviews(text):
             cleaned.append(line)
 
     return cleaned
-
-
-st.set_page_config(page_title="예약자원고생성", layout="wide")
 
 if "generated_results" not in st.session_state:
     st.session_state.generated_results = []
@@ -903,6 +950,13 @@ if run_btn:
                 time.sleep(1)
 
             st.session_state.generated_results = all_reviews[:target_count]
+
+            save_reviews(
+    category_group,
+    category,
+    guide,
+    st.session_state.generated_results
+)
 
             with right:
                 status_text.success("✅ 생성 완료")
