@@ -1028,16 +1028,16 @@ if menu == "✍️ 원고 생성":
                 unsafe_allow_html=True
             )
 
-    else:
-        st.markdown(
-            """
-            <div class="info-box">
-                아직 생성된 리뷰가 없습니다.<br>
-                왼쪽에서 업종과 고객 가이드를 입력한 뒤 <b>리뷰 생성 시작</b> 버튼을 눌러주세요.
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        else:
+            st.markdown(
+                """
+                <div class="info-box">
+                    아직 생성된 리뷰가 없습니다.<br>
+                    왼쪽에서 업종과 고객 가이드를 입력한 뒤 <b>리뷰 생성 시작</b> 버튼을 눌러주세요.
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
 st.markdown("## 📚 저장된 원고")
 
