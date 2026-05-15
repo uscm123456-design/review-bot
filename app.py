@@ -1028,3 +1028,34 @@ with right:
             """,
             unsafe_allow_html=True
         )
+
+st.markdown("## 📚 저장된 원고")
+
+conn = sqlite3.connect("reviews.db")
+
+saved_reviews = conn.execute("""
+    SELECT created_at, category_group, category, review_text
+    FROM reviews
+    ORDER BY id DESC
+    LIMIT 100
+""").fetchall()
+
+conn.close()
+
+for row in saved_reviews:
+    st.markdown(f"""
+    <div style="
+        background:white;
+        padding:14px;
+        border-radius:12px;
+        margin-bottom:10px;
+        border:1px solid #eee;
+    ">
+        <div style="font-size:12px;color:gray;">
+            {row[0]} | {row[1]} | {row[2]}
+        </div>
+        <div style="margin-top:6px;">
+            {row[3]}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
