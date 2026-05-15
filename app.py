@@ -980,16 +980,16 @@ if menu == "✍️ 원고 생성":
         except Exception as e:
             st.error(f"오류: {str(e)}")
 
-with right:
-    st.markdown('<div class="panel-title">📝 생성 결과</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-caption">생성된 결과를 바로 복사해서 시트에 붙여넣을 수 있습니다.</div>', unsafe_allow_html=True)
+    with right:
+        st.markdown('<div class="panel-title">📝 생성 결과</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-caption">생성된 결과를 바로 복사해서 시트에 붙여넣을 수 있습니다.</div>', unsafe_allow_html=True)
 
-    if st.session_state.generated_results:
-        excel_ready = "\n".join(st.session_state.generated_results)
-        copy_text = json.dumps(excel_ready)
+        if st.session_state.generated_results:
+            excel_ready = "\n".join(st.session_state.generated_results)
+            copy_text = json.dumps(excel_ready)
 
-        components.html(
-            f"""
+            components.html(
+                f"""
             <button onclick='navigator.clipboard.writeText({copy_text}); this.innerText="✅ 복사 완료";'
                 style="
                     width:100%;
