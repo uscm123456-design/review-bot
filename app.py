@@ -649,6 +649,15 @@ with left:
     value="",
     height=300,
     placeholder="""
+예시)
+- 직원이 직접 구워줌
+- 가족 외식 많음
+- 주차 편함
+- 매장 청결
+- 소수정예 수업
+- 상담 꼼꼼
+- 재방문율 높음
+"""
 )
 
     must_include = st.text_input("필수 포함 키워드", value="")
