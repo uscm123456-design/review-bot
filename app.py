@@ -1020,6 +1020,9 @@ if menu == "✍️ 원고 생성":
             height=64
         )
 
+
+        excel_ready = "\n".join(st.session_state.generated_results)
+        
         st.text_area(
             "📋 엑셀 붙여넣기용 전체 복사",
             value=excel_ready,
