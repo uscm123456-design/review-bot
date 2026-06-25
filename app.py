@@ -332,7 +332,22 @@ def clean_reviews(text):
         if line:
             cleaned.append(line)
     return cleaned
+def count_chars(text):
+    return len(text.strip())
 
+def is_valid_review(review, min_len, max_len):
+    length = count_chars(review)
+    return min_len <= length <= max_len
+
+def is_duplicate_review(review, existing_reviews):
+    review_start = review[:20]
+    for old in existing_reviews:
+        if review == old:
+            return True
+        if old[:20] == review_start:
+            return True
+    return False
+    
 if "generated_results" not in st.session_state:
     st.session_state.generated_results = []
 
@@ -536,10 +551,20 @@ if menu == "✍️ 원고 생성":
                     raw_text = message.content[0].text.strip()
                     batch_reviews = clean_reviews(raw_text)
 
-                    # 가드레일: 지정된 최소 글자수 미만인 것은 누적시키지 않음
+                    # 가드레일: 글자수 범위와 중복 여부를 검사한 뒤 누적
                     for r in batch_reviews:
-                        if len(r) >= min_len:
-                            all_reviews.append(r)
+                        r = r.strip()
+
+                        if not is_valid_review(r, min_len, max_len):
+                            continue
+
+                        if is_duplicate_review(r, all_reviews):
+                            continue
+
+                        all_reviews.append(r)
+
+                        if len(all_reviews) >= target_count:
+                            break
 
                     time.sleep(1)
 
