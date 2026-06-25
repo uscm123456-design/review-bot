@@ -454,10 +454,13 @@ def inject_main_style():
     }
     [data-testid="stHeader"] { background: transparent; }
     .block-container {
-        max-width: 1360px;
-        padding-top: 2.2rem;
-        padding-bottom: 4rem;
-    }
+        max-width: 1650px;
+        width: 100%;
+        padding-top: 1.8rem;
+        padding-left: 1.2rem;
+        padding-right: 1.2rem;
+        padding-bottom: 3rem;
+}
     section[data-testid="stSidebar"] {
         width: 260px !important;
         min-width: 260px !important;
@@ -799,7 +802,7 @@ if menu == "✍️ 원고 생성":
     </div>
     """, unsafe_allow_html=True)
 
-    left, right = st.columns([1, 1.25], gap="large")
+    left, right = st.columns([1.08, 1.32], gap="medium")
 
     with left:
         st.markdown("""
