@@ -798,7 +798,7 @@ st.sidebar.markdown("""
 <div class="sidebar-bottom">
     <div class="sidebar-bottom-card">
         <div class="sidebar-user">👤 관리자님</div>
-        <div class="sidebar-desc">오늘도 좋은 하루 되세요!</div>
+        <div class="sidebar-desc">안되면 될때까지!</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
