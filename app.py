@@ -919,7 +919,20 @@ if menu == "✍️ 원고 생성":
 
                 current_batch_size = min(batch_size, total_count - start)
                 end = start + current_batch_size
+                # 글자 수 3등분 분할 로직 추가
+    mid_len = int((min_len + max_len) / 2)
+    count_per_group = total_count // 3
 
+    split_guide = f"""
+    [글자 수 편차 엄격 준수 규칙]
+    총 {total_count}개의 원고를 생성할 때, 평균치로 일괄 작성하지 말고 반드시 아래 3개 그룹으로 수량을 정확히 나누어 글자 수의 편차를 크게 하여 작성하세요.
+    - 그룹 1 (처음 {count_per_group}개): 공백 포함 {min_len}자 내외 (절대 길게 쓰지 말 것)
+    - 그룹 2 (다음 {count_per_group}개): 공백 포함 {mid_len}자 내외
+    - 그룹 3 (나머지 전체 원고): 공백 포함 {max_len}자 내외
+    """
+    final_prompt = f"{guide}\n\n{split_guide}"
+
+                
                 message = client.messages.create(
                     model="claude-sonnet-4-6",
                     max_tokens=12000,
