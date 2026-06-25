@@ -5,10 +5,8 @@ import re
 import streamlit.components.v1 as components
 import json
 import time
-
 import sqlite3
 from datetime import datetime
-
 
 CLAUDE_API_KEY = st.secrets["CLAUDE_API_KEY"]
 APP_PASSWORD = st.secrets.get("APP_PASSWORD")
@@ -17,10 +15,10 @@ st.set_page_config(
     page_title="예약자원고생성",
     layout="wide"
 )
+
 def init_db():
     conn = sqlite3.connect("reviews.db")
     cur = conn.cursor()
-
     cur.execute("""
         CREATE TABLE IF NOT EXISTS review_batches (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,25 +30,16 @@ def init_db():
             reviews_text TEXT
         )
     """)
-
     conn.commit()
     conn.close()
-
 
 def save_review_batch(category_group, category, guide, reviews):
     conn = sqlite3.connect("reviews.db")
     cur = conn.cursor()
-
     reviews_text = "\n".join(reviews)
-
     cur.execute("""
         INSERT INTO review_batches (
-            created_at,
-            category_group,
-            category,
-            guide,
-            review_count,
-            reviews_text
+            created_at, category_group, category, guide, review_count, reviews_text
         )
         VALUES (?, ?, ?, ?, ?, ?)
     """, (
@@ -61,17 +50,14 @@ def save_review_batch(category_group, category, guide, reviews):
         len(reviews),
         reviews_text
     ))
-
     conn.commit()
     conn.close()
-
 
 init_db()
 
 if not APP_PASSWORD:
     st.error("APP_PASSWORD를 secrets에 추가해주세요.")
     st.stop()
-
 
 def check_login():
     if "authenticated" not in st.session_state:
@@ -88,101 +74,30 @@ def check_login():
             radial-gradient(circle at bottom right, rgba(236,72,153,0.13), transparent 30%),
             linear-gradient(135deg, #f8fafc 0%, #eef2ff 48%, #ffffff 100%);
     }
-
-    [data-testid="stHeader"] {
-        background: transparent;
-    }
-
-    .block-container {
-        max-width: 460px;
-        padding-top: 12rem;
-    }
-
-    .login-brand {
-        text-align: center;
-        margin-bottom: 18px;
-    }
-
+    [data-testid="stHeader"] { background: transparent; }
+    .block-container { max-width: 460px; padding-top: 12rem; }
+    .login-brand { text-align: center; margin-bottom: 18px; }
     .login-badge {
-        display: inline-block;
-        padding: 7px 14px;
-        border-radius: 999px;
-        background: rgba(124,58,237,0.10);
-        color: #6d28d9;
-        font-size: 13px;
-        font-weight: 800;
-        margin-bottom: 18px;
+        display: inline-block; padding: 7px 14px; border-radius: 999px;
+        background: rgba(124,58,237,0.10); color: #6d28d9; font-size: 13px; font-weight: 800; margin-bottom: 18px;
         border: 1px solid rgba(124,58,237,0.18);
     }
-
-    .login-title {
-        font-size: 44px;
-        font-weight: 950;
-        letter-spacing: -1.2px;
-        color: #0f172a;
-        margin-bottom: 10px;
+    .login-title { font-size: 44px; font-weight: 950; letter-spacing: -1.2px; color: #0f172a; margin-bottom: 10px; }
+    .login-desc { color: #64748b; font-size: 15px; line-height: 1.6; margin-bottom: 32px; }
+    [data-testid="stTextInput"] div { align-items: center; }
+    [data-testid="stTextInput"] input {
+        height: 56px !important; min-height: 56px !important; padding-left: 16px !important;
+        border-radius: 16px; border: 1px solid #dbeafe; background: rgba(255,255,255,0.88); font-size: 16px;
+        box-shadow: 0 10px 28px rgba(15,23,42,0.06);
     }
-
-    .login-desc {
-        color: #64748b;
-        font-size: 15px;
-        line-height: 1.6;
-        margin-bottom: 32px;
-    }
-
-   [data-testid="stTextInput"] div {
-    align-items: center;
-}
-
-[data-testid="stTextInput"] input {
-    height: 56px !important;
-    min-height: 56px !important;
-
-    padding-top: 0px !important;
-    padding-bottom: 0px !important;
-    padding-left: 16px !important;
-
-    line-height: 56px !important;
-
-    border-radius: 16px;
-    border: 1px solid #dbeafe;
-    background: rgba(255,255,255,0.88);
-
-    font-size: 16px;
-
-    box-shadow: 0 10px 28px rgba(15,23,42,0.06);
-}
-
-    [data-testid="stTextInput"] input:focus {
-        border-color: #8b5cf6;
-        box-shadow: 0 0 0 4px rgba(139,92,246,0.16);
-    }
-
+    [data-testid="stTextInput"] input:focus { border-color: #8b5cf6; box-shadow: 0 0 0 4px rgba(139,92,246,0.16); }
     .stButton > button {
-        width: 100%;
-        height: 56px;
-        border-radius: 16px;
-        border: none;
-        background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899);
-        color: white;
-        font-size: 16px;
-        font-weight: 900;
-        box-shadow: 0 18px 36px rgba(124,58,237,0.28);
-        transition: all 0.18s ease;
+        width: 100%; height: 56px; border-radius: 16px; border: none;
+        background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899); color: white;
+        font-size: 16px; font-weight: 900; box-shadow: 0 18px 36px rgba(124,58,237,0.28); transition: all 0.18s ease;
     }
-
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        color: white;
-        box-shadow: 0 24px 48px rgba(124,58,237,0.34);
-    }
-
-    .login-footer {
-        text-align: center;
-        color: #94a3b8;
-        font-size: 12px;
-        margin-top: 28px;
-    }
+    .stButton > button:hover { transform: translateY(-2px); color: white; box-shadow: 0 24px 48px rgba(124,58,237,0.34); }
+    .login-footer { text-align: center; color: #94a3b8; font-size: 12px; margin-top: 28px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -190,19 +105,11 @@ def check_login():
     <div class="login-brand">
         <div class="login-badge">USCM</div>
         <div class="login-title">AI 리뷰 생성기</div>
-        <div class="login-desc">
-            원고 생성기를 사용하려면<br>
-            관리자 비밀번호를 입력해주세요.
-        </div>
+        <div class="login-desc">원고 생성기를 사용하려면<br>관리자 비밀번호를 입력해주세요.</div>
     </div>
     """, unsafe_allow_html=True)
 
-    password = st.text_input(
-        "비밀번호",
-        type="password",
-        label_visibility="collapsed",
-        placeholder=""
-    )
+    password = st.text_input("비밀번호", type="password", label_visibility="collapsed", placeholder="")
 
     if st.button("로그인"):
         if password == APP_PASSWORD:
@@ -211,20 +118,12 @@ def check_login():
         else:
             st.error("비밀번호가 틀렸습니다.")
 
-    st.markdown(
-        '<div class="login-footer">© AI Review Generator. Private Access Only.</div>',
-        unsafe_allow_html=True
-    )
-
+    st.markdown('<div class="login-footer">© AI Review Generator. Private Access Only.</div>', unsafe_allow_html=True)
     st.stop()
-
 
 check_login()
 
-menu = st.sidebar.radio(
-    "메뉴",
-    ["✍️ 원고 생성", "📚 저장된 원고"]
-)
+menu = st.sidebar.radio("메뉴", ["✍️ 원고 생성", "📚 저장된 원고"])
 
 CATEGORY_PATTERNS = {
     "음식점/카페": {
@@ -267,111 +166,45 @@ CATEGORY_PATTERNS = {
         "만족/재방문": ["결과가 생각보다 자연스러워서", "머리 손질이 편해져서", "분위기도 편하고 결과도 좋아서", "다음에도 여기로 올 것 같아요"],
         "손상/관리": ["머릿결 손상이 걱정됐는데", "손상 덜 가게 신경 써주셔서", "관리 방법까지 알려주셔서", "시술 후에도 머리가 차분해서 좋았어요"]
     },
-
     "점집": {
         "상담/첫방문": ["처음 방문이라 긴장했는데", "지인 추천으로 상담받아봤는데", "요즘 고민이 많아서 찾아갔는데", "후기 보고 예약했는데"],
         "고민상담": ["말 못 했던 고민까지 차분히 들어주셔서", "현재 상황을 잘 짚어주셔서", "답답했던 부분이 조금 정리됐어요", "이야기 나누는 동안 마음이 편해졌어요"],
         "분위기/신뢰": ["분위기가 부담스럽지 않아서", "편하게 말할 수 있게 해주셔서", "억지로 겁주는 느낌이 아니라 좋았어요", "차분하게 설명해주셔서 믿음이 갔어요"],
         "재상담": ["다음에 또 고민 생기면 오고 싶어요", "상담받고 나니 마음이 한결 가벼웠어요", "생각 정리하는 데 도움이 됐어요", "주변에도 조심스럽게 추천하고 싶네요"]
     },
-
     "고기집": {
         "예약/방문": ["예약하고 방문했는데", "주말이라 미리 예약하고 갔는데", "가족들이랑 고기 먹으러 갔는데", "퇴근하고 고기 생각나서 들렀어요"],
         "맛/구성": ["고기 질이 좋아서 첫입부터 만족했어요", "반찬 구성이 깔끔해서 좋았어요", "고기랑 곁들여 먹기 좋은 구성이었어요", "양도 괜찮고 맛도 만족스러웠어요"],
         "직원/서비스": ["직원분들이 친절하게 응대해주셔서", "고기 굽는 타이밍을 잘 봐주셔서", "바쁜 시간대인데도 응대가 좋았어요", "설명도 친절하게 해주셔서 편했어요"],
         "모임/외식": ["가족 외식 장소로 괜찮았어요", "친구들이랑 오기 좋은 분위기였어요", "회식 장소로도 무난해 보였어요", "부모님 모시고 와도 좋을 것 같아요"]
     },
-
     "왁싱/제모": {
         "예약/첫방문": ["처음 왁싱 받아보는 거라 긴장했는데", "예약하고 시간 맞춰 방문했어요", "리뷰 보고 조심스럽게 예약했는데", "제모 관리 알아보다가 방문했어요"],
         "상담/안내": ["상담부터 자세히 해주셔서", "관리 전 설명을 꼼꼼히 해주셔서", "처음이라 모르는 게 많았는데", "주의사항까지 친절하게 알려주셨어요"],
         "위생/분위기": ["공간이 깔끔하게 관리되어 있어서", "위생적으로 진행되는 느낌이라", "프라이빗한 분위기라 부담이 덜했어요", "편하게 받을 수 있게 배려해주셨어요"],
         "관리만족": ["생각보다 편하게 받고 왔어요", "꼼꼼하게 관리해주셔서 만족했어요", "민망할까 걱정했는데 편안했어요", "다음 관리도 여기서 받을 생각이에요"]
     },
-
     "출장업종": {
         "예약/문의": ["문의드렸을 때부터 친절하게 안내해주셔서", "급하게 필요해서 연락드렸는데", "예약 시간 맞춰 방문해주셔서", "상담부터 설명이 자세해서 좋았어요"],
         "방문/편리함": ["직접 방문해주시니 정말 편했어요", "따로 나가지 않아도 돼서 좋았어요", "시간 맞춰 와주셔서 편하게 이용했어요", "집에서 바로 해결할 수 있어서 만족했어요"],
         "작업/꼼꼼함": ["작업을 꼼꼼하게 해주시는 게 느껴졌어요", "전후 설명을 잘해주셔서 믿음이 갔어요", "필요한 부분만 정확히 봐주셔서 좋았어요", "마무리까지 깔끔하게 해주셨어요"],
         "청소/설비": ["청소 후 확실히 깔끔해진 게 보였어요", "설비 문제도 차분하게 점검해주셨어요", "작업 과정이 전문적으로 느껴졌어요", "관리 방법까지 알려주셔서 도움이 됐어요"]
     },
-
     "아카데미/학원": {
-        "상담/등록": [
-            "상담받으러 방문했는데",
-            "수업 알아보다가 방문했어요",
-            "등록 전에 상담 먼저 받아봤는데",
-            "커리큘럼이 궁금해서 방문했어요"
-        ],
-
-        "첫수업/체험": [
-            "첫 수업 들어봤는데",
-            "체험 수업 받아보고 결정했어요",
-            "처음이라 긴장했는데",
-            "수업 분위기 궁금해서 참여해봤어요"
-        ],
-
-        "강사/수업": [
-            "강사님 설명이 이해하기 쉬워서",
-            "수업 진행이 체계적인 느낌이라",
-            "질문해도 편하게 알려주셔서",
-            "수업 분위기가 딱 부담 없어서 좋았어요"
-        ],
-
-        "시설/분위기": [
-            "공부하기 좋은 분위기라",
-            "시설이 깔끔하게 관리돼 있어서",
-            "집중하기 괜찮은 환경이라",
-            "전체적으로 차분한 분위기라 좋았어요"
-        ],
-
-        "재등록/추천": [
-            "꾸준히 다녀볼 생각입니다",
-            "주변에도 추천하고 싶네요",
-            "다음 과정도 이어서 들어보고 싶어요",
-            "생각보다 만족도가 높았어요"
-        ]
+        "상담/등록": ["상담받으러 방문했는데", "수업 알아보다가 방문했어요", "등록 전에 상담 먼저 받아봤는데", "커리큘럼이 궁금해서 방문했어요"],
+        "첫수업/체험": ["첫 수업 들어봤는데", "체험 수업 받아보고 결정했어요", "처음이라 긴장했는데", "수업 분위기 궁금해서 참여해봤어요"],
+        "강사/수업": ["강사님 설명이 이해하기 쉬워서", "수업 진행이 체계적인 느낌이라", "질문해도 편하게 알려주셔서", "수업 분위기가 딱 부담 없어서 좋았어요"],
+        "시설/분위기": ["공부하기 좋은 분위기라", "시설이 깔끔하게 관리돼 있어서", "집중하기 괜찮은 환경이라", "전체적으로 차분한 분위기라 좋았어요"],
+        "재등록/추천": ["꾸준히 다녀볼 생각입니다", "주변에도 추천하고 싶네요", "다음 과정도 이어서 들어보고 싶어요", "생각보다 만족도가 높았어요"]
     },
-    
     "횟집/해산물": {
-        "회식/모임": [
-            "회식 자리로 방문",
-            "친구들이랑 해산물 먹으러 방문",
-            "가족 외식으로 방문",
-            "오랜만에 모임 있어서 방문"
-        ],
-
-        "추천/검색": [
-            "지인 추천으로 방문",
-            "후기 괜찮아서 방문",
-            "근처 횟집 찾다가 방문",
-            "해산물 먹고 싶어서 검색하다 방문"
-        ],
-
-        "술자리/저녁": [
-            "술 한잔하려고 방문",
-            "퇴근 후 저녁 먹으러 방문",
-            "가볍게 한잔할 겸 방문",
-            "저녁 메뉴 고민하다 방문"
-        ],
-
-        "신선도/구성": [
-            "회 신선하다고 해서 방문",
-            "해산물 구성 괜찮다고 해서 방문",
-            "스끼다시 잘 나온다고 해서 방문",
-            "회 퀄리티 괜찮다는 얘기 듣고 방문"
-        ],
-
-        "가족/부모님": [
-            "부모님 모시고 방문",
-            "가족끼리 식사하러 방문",
-            "어른들 모시고 가기 괜찮을 것 같아서 방문",
-            "주말 가족 외식으로 방문"
-        ]
-    },
+        "회식/모임": ["회식 자리로 방문", "친구들이랑 해산물 먹으러 방문", "가족 외식으로 방문", "오랜만에 모임 있어서 방문"],
+        "추천/검색": ["지인 추천으로 방문", "후기 괜찮아서 방문", "근처 횟집 찾다가 방문", "해산물 먹고 싶어서 검색하다 방문"],
+        "술자리/저녁": ["술 한잔하려고 방문", "퇴근 후 저녁 먹으러 방문", "가볍게 한잔할 겸 방문", "저녁 메뉴 고민하다 방문"],
+        "신선도/구성": ["회 신선하다고 해서 방문", "해산물 구성 괜찮다고 해서 방문", "스끼다시 잘 나온다고 해서 방문", "회 퀄리티 괜찮다는 얘기 듣고 방문"],
+        "가족/부모님": ["부모님 모시고 방문", "가족끼리 식사하러 방문", "어른들 모시고 가기 괜찮을 것 같아서 방문", "주말 가족 외식으로 방문"]
+    }
 }
-
-    
 
 CATEGORY_RULES = {
     "음식점/카페": "음식 맛, 분위기, 친절함, 청결, 양, 가격 만족도, 재방문 의사, 모임/데이트/가족 외식 상황을 자연스럽게 섞어라. 고객 가이드에 없는 메뉴명은 임의로 만들지 마라.",
@@ -386,9 +219,8 @@ CATEGORY_RULES = {
     "왁싱/제모": "상담, 위생, 프라이빗한 분위기, 꼼꼼한 관리, 민망함을 줄여주는 응대, 주의사항 안내, 재방문 의사를 자연스럽게 섞어라. 통증 없음이나 효과를 과장해서 단정하지 마라.",
     "출장업종": "방문 편리함, 시간 약속, 친절한 상담, 꼼꼼한 작업, 전후 설명, 깔끔한 마무리, 전문성, 재이용 의사를 자연스럽게 섞어라. 고객 가이드에 없는 작업 범위나 장비는 임의로 만들지 마라.",
     "일반/범용": "친절함, 청결, 분위기, 가격 만족도, 접근성, 재방문 의사를 업종에 맞게 자연스럽게 조합하라.",
-    "횟집/해산물": "회 신선도, 해산물 구성, 스끼다시, 양, 분위기, 술자리, 가족 외식, 직원 응대, 청결, 가격 만족도, 재방문 의사를 자연스럽게 섞어라. 고객 가이드에 없는 어종, 메뉴명, 원산지, 없는 서비스는 임의로 만들지 마라.",
+    "횟집/해산물": "회 신선도, 해산물 구성, 스끼다시, 양, 분위기, 술자리, 가족 외식, 직원 응대, 청결, 가격 만족도, 재방문 의사를 자연스럽게 섞어라. 고객 가이드에 없는 어종, 메뉴명, 원산지, 없는 서비스는 임의로 만들지 마라."
 }
-
 
 PERSONA_PROMPTS = {
     "20대 자연형": "일상 공유하듯 자연스럽게, 꾸미지 않고 솔직하게 작성. ㅎㅎ/😊 가끔만 사용.",
@@ -399,7 +231,6 @@ PERSONA_PROMPTS = {
     "20대 학생형": "가격 부담이나 선택 고민을 살짝 언급하며 현실적으로 작성.",
     "20대 즉흥방문형": "계획 없이 들렀다가 괜찮았던 흐름으로 자연스럽게 작성.",
     "20대 수다형": "말이 조금 많은 편처럼 느낀 점을 자연스럽게 풀어 작성.",
-
     "20~30 남성 담백형": "짧고 간결하게, 감정 과하지 않게 작성.",
     "20~30 남성 현실형": "실제 경험 위주, 장단점 균형 있게 표현.",
     "20~30 남성 무난형": "특별한 과장 없이 무난하게 만족 표현.",
@@ -407,7 +238,6 @@ PERSONA_PROMPTS = {
     "20~30 남성 귀차니즘형": "복잡한 설명보다 빨리 해결돼서 좋았다는 흐름으로 작성.",
     "20~30 남성 비교형": "다른 곳과 비교해본 뒤 괜찮았다는 식으로 담백하게 작성.",
     "20~30 남성 실용형": "분위기보다 결과, 가격, 편리함 같은 실용적인 부분 중심.",
-
     "30대 여성 꼼꼼형": "과정, 설명, 결과를 꼼꼼하게 풀어서 작성.",
     "30대 여성 현실형": "과장 없이 현실적인 만족 위주.",
     "30대 여성 비교형": "다른 곳과 비교한 느낌 살짝 포함.",
@@ -415,14 +245,12 @@ PERSONA_PROMPTS = {
     "30대 여성 예민형": "위생, 설명, 응대, 세부 과정 등 디테일을 신경 쓰는 느낌.",
     "30대 여성 추천형": "주변에 조심스럽게 추천할 만하다는 흐름으로 작성.",
     "30대 여성 바쁜직장인형": "시간, 예약, 동선, 빠른 응대 등 편의성을 자연스럽게 언급.",
-
     "40대 차분형": "차분하고 정리된 말투, 신뢰감 중심.",
     "40대 현실검토형": "가격, 설명, 결과를 따져보고 납득한 느낌으로 작성.",
     "40대 가족동행형": "가족과 함께 이용하거나 가족 입장에서 본 만족감을 포함.",
     "50대 안정형": "편안함, 신뢰, 안정감 위주로 작성.",
     "50대 신뢰중시형": "설명, 응대 태도, 오래 이용할 수 있을 것 같은 믿음 중심.",
     "중장년 가족형": "가족과 함께 이용한 느낌 강조.",
-
     "가성비형": "가격 대비 만족 강조, 효율 중심.",
     "퀄리티중시형": "서비스나 결과 퀄리티 중심으로 평가.",
     "분위기중시형": "공간, 분위기, 첫인상, 이용 중 느낀 감정 위주.",
@@ -431,7 +259,6 @@ PERSONA_PROMPTS = {
     "시간중시형": "대기, 예약 시간, 진행 속도, 일정 맞추기 좋았던 점 중심.",
     "설명중시형": "모르는 부분을 이해하기 쉽게 설명해준 점을 중심으로 작성.",
     "결과중시형": "과정보다 이용 후 만족감이나 체감된 결과 중심.",
-
     "첫방문 조심형": "처음이라 걱정했던 부분에서 만족으로 이어지는 흐름 포함.",
     "급하게 방문": "급하게 방문했지만 생각보다 괜찮았던 흐름.",
     "추천받고 방문": "지인 추천으로 방문한 느낌 강조하되 같은 문장으로 시작하지 않기.",
@@ -440,7 +267,6 @@ PERSONA_PROMPTS = {
     "우연히 방문형": "지나가다 또는 근처 일정 중 들른 느낌으로 작성.",
     "고민끝선택형": "여러 곳을 고민하다 선택한 흐름으로 작성.",
     "기대낮음만족형": "처음 기대가 크지 않았지만 이용 후 괜찮았던 흐름.",
-
     "짧은 후기형": "길게 설명하지 않고 핵심만 간단히 작성.",
     "감정절제형": "감정 표현을 줄이고 사실 중심으로 담백하게 작성.",
     "살짝 감탄형": "짧은 감탄 후 좋았던 이유를 자연스럽게 설명.",
@@ -449,7 +275,6 @@ PERSONA_PROMPTS = {
     "대화체형": "친구에게 말하듯 가볍게 풀어 작성.",
     "관찰형": "공간, 응대, 과정 등을 차분히 관찰한 느낌으로 작성.",
     "후기잘안씀형": "원래 후기 잘 안 쓰지만 남긴다는 느낌을 과하지 않게 포함.",
-
     "가벼운 리액션": "ㅋㅋ, ㅎㅎ를 가볍게 섞어 자연스럽게 작성.",
     "이모티콘 약간": "😊, 👍 같은 이모티콘을 일부만 자연스럽게 사용.",
     "친근한 말투": "친구에게 말하듯 편하게, 너무 딱딱하지 않게 작성.",
@@ -457,7 +282,6 @@ PERSONA_PROMPTS = {
     "조금 긴 말투": "한 가지 경험을 조금 길게 풀어 쓰는 방식.",
     "문장짧게끊기형": "문장을 짧게 끊어서 실제 후기처럼 작성.",
     "부드러운 존댓말형": "전체적으로 부드러운 존댓말로 안정감 있게 작성.",
-
     "단골 느낌": "여러 번 방문한 사람처럼 익숙한 만족감을 자연스럽게 포함.",
     "초보 경험": "처음이라 몰랐던 부분이나 걱정했던 점을 자연스럽게 언급.",
     "기대이하→만족": "처음엔 기대가 크지 않았지만 이용 후 만족한 흐름.",
@@ -498,19 +322,15 @@ WRITING_STYLES = [
 def clean_reviews(text):
     lines = text.splitlines()
     cleaned = []
-
     for line in lines:
         line = line.strip()
         if not line:
             continue
-
         line = re.sub(r"^\d+[\.\)]\s*", "", line)
         line = re.sub(r"^-+\s*", "", line)
         line = line.strip().strip('"').strip("'").strip()
-
         if line:
             cleaned.append(line)
-
     return cleaned
 
 if "generated_results" not in st.session_state:
@@ -518,175 +338,64 @@ if "generated_results" not in st.session_state:
 
 st.markdown("""
 <style>
-
-/* 사이드바 폭 */
 section[data-testid="stSidebar"] {
-    width: 220px !important;
-    min-width: 220px !important;
-
-    background: rgba(255,255,255,0.72);
-    backdrop-filter: blur(18px);
+    width: 220px !important; min-width: 220px !important;
+    background: rgba(255,255,255,0.72); backdrop-filter: blur(18px);
     border-right: 1px solid rgba(226,232,240,0.7);
 }
-
-/* 전체 배경 */
 .stApp {
     background:
         radial-gradient(circle at top left, rgba(124,58,237,0.18), transparent 32%),
         radial-gradient(circle at top right, rgba(236,72,153,0.14), transparent 30%),
         linear-gradient(135deg, #faf5ff 0%, #f3e8ff 48%, #ffffff 100%);
 }
-
-/* 버튼 */
 .stButton > button {
-    height: 50px;
-    border-radius: 15px;
-    font-weight: 900;
-    border: none;
-    background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899);
-    color: white;
-    box-shadow: 0 12px 24px rgba(124, 58, 237, 0.25);
-    transition: all 0.2s ease;
+    height: 50px; border-radius: 15px; font-weight: 900; border: none;
+    background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899); color: white;
+    box-shadow: 0 12px 24px rgba(124, 58, 237, 0.25); transition: all 0.2s ease;
 }
-
-.stButton > button:hover {
-    transform: translateY(-2px);
-}
-
-.stButton > button:active {
-    transform: scale(0.97);
-}
-
-/* 초기화 버튼 */
-.stButton:nth-of-type(2) > button {
-    background: #f1f5f9;
-    color: #475569;
-}
-
-/* 복사 버튼 */
-button[onclick*="clipboard"] {
-    background: linear-gradient(90deg, #ec4899, #f43f5e);
-    color: white;
-}
-/* 버튼 hover 고급 애니메이션 */
-.stButton > button {
-    position: relative;
-    overflow: hidden;
-}
-
+.stButton > button:hover { transform: translateY(-2px); }
+.stButton > button:active { transform: scale(0.97); }
+.stButton:nth-of-type(2) > button { background: #f1f5f9; color: #475569; }
+button[onclick*="clipboard"] { background: linear-gradient(90deg, #ec4899, #f43f5e); color: white; }
+.stButton > button { position: relative; overflow: hidden; }
 .stButton > button::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -120%;
-    width: 80%;
-    height: 100%;
-    background: linear-gradient(
-        120deg,
-        transparent,
-        rgba(255,255,255,0.35),
-        transparent
-    );
+    content: ""; position: absolute; top: 0; left: -120%; width: 80%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
     transition: all 0.45s ease;
 }
-
-.stButton > button:hover::before {
-    left: 120%;
-}
-
-.stButton > button:hover {
-    transform: translateY(-3px) scale(1.01);
-}
-
-.stButton > button:active {
-    transform: scale(0.96);
-}
-
-/* 생성 중 로딩 박스 */
+.stButton > button:hover::before { left: 120%; }
+.stButton > button:hover { transform: translateY(-3px) scale(1.01); }
+.stButton > button:active { transform: scale(0.96); }
 .loading-card {
-    background: rgba(255,255,255,0.85);
-    border: 1px solid #ddd6fe;
-    border-radius: 18px;
-    padding: 18px 20px;
-    color: #6d28d9;
-    font-weight: 800;
-    box-shadow: 0 14px 32px rgba(124,58,237,0.12);
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    background: rgba(255,255,255,0.85); border: 1px solid #ddd6fe; border-radius: 18px;
+    padding: 18px 20px; color: #6d28d9; font-weight: 800;
+    box-shadow: 0 14px 32px rgba(124,58,237,0.12); display: flex; align-items: center; gap: 12px;
 }
-
-/* 로딩 스피너 */
 .loader {
-    width: 18px;
-    height: 18px;
-    border: 3px solid #ddd6fe;
-    border-top: 3px solid #8b5cf6;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    width: 18px; height: 18px; border: 3px solid #ddd6fe; border-top: 3px solid #8b5cf6;
+    border-radius: 50%; animation: spin 0.8s linear infinite;
 }
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* 히어로 카드 */
+@keyframes spin { to { transform: rotate(360deg); } }
 .hero-card {
-    background: linear-gradient(135deg, #7c3aed, #a855f7, #ec4899);
-    border-radius: 26px;
-    padding: 32px 28px;
-    color: white;
-    box-shadow: 0 20px 60px rgba(124, 58, 237, 0.35);
-    margin-bottom: 22px;
+    background: linear-gradient(135deg, #7c3aed, #a855f7, #ec4899); border-radius: 26px;
+    padding: 32px 28px; color: white; box-shadow: 0 20px 60px rgba(124, 58, 237, 0.35); margin-bottom: 22px;
 }
-
-/* 상단 뱃지 */
-.hero-badge {
-    display: inline-block;
-    background: rgba(255,255,255,0.2);
-    padding: 6px 12px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-
-/* 메인 타이틀 */
-.hero-title {
-    font-size: 34px;
-    font-weight: 900;
-    margin-bottom: 10px;
-    letter-spacing: -0.5px;
-}
-
-/* 설명 */
-.hero-desc {
-    font-size: 15px;
-    line-height: 1.6;
-    opacity: 0.95;
-}
-
-
+.hero-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-bottom: 12px; }
+.hero-title { font-size: 34px; font-weight: 900; margin-bottom: 10px; letter-spacing: -0.5px; }
+.hero-desc { font-size: 15px; line-height: 1.6; opacity: 0.95; }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown(
-    """
-    <div class="hero-card">
+st.markdown("""
+<div class="hero-card">
     <div class="hero-badge">✨ AI 자동 생성</div>
     <div class="hero-title">네이버 예약자 리뷰 원고 생성기</div>
-    <div class="hero-desc">
-        업종, 고객 가이드, 말투를 선택하면<br>
-        자연스러운 예약자 리뷰를 한 번에 생성합니다.
-    </div>
+    <div class="hero-desc">업종, 고객 가이드, 말투를 선택하면<br>자연스러운 예약자 리뷰를 한 번에 생성합니다.</div>
 </div>
-    """,
-    unsafe_allow_html=True
-)
-if menu == "✍️ 원고 생성":
+""", unsafe_allow_html=True)
 
+if menu == "✍️ 원고 생성":
     left, right = st.columns([1, 1.25], gap="large")
 
     with left:
@@ -695,49 +404,26 @@ if menu == "✍️ 원고 생성":
 
         category_group = st.selectbox("업종 대분류 선택", list(CATEGORY_PATTERNS.keys()))
         category = st.text_input("상세 업종", value="")
-
-        count = st.number_input(
-            "생성할 리뷰 수",
-            min_value=1,
-            max_value=200,
-            value=10
-        )
+        count = st.number_input("생성할 리뷰 수", min_value=1, max_value=200, value=10)
 
         col1, col2 = st.columns(2)
+        with col1:
+            min_len = st.number_input("최소 글자수", value=100)
+        with col2:
+            max_len = st.number_input("최대 글자수", value=200)
 
-    with col1:
-        min_len = st.number_input("최소 글자수", value=100)
+        guide = st.text_area(
+            "고객 가이드 / 업체 특장점",
+            value="",
+            height=300,
+            placeholder="예시)\n- 직원이 직접 구워줌\n- 가족 외식 많음\n- 주차 편함\n- 매장 청결"
+        )
+        must_include = st.text_input("필수 포함 키워드", value="")
+        forbidden = st.text_input("금지 키워드(,로 구분)", value="")
 
-    with col2:
-        max_len = st.number_input("최대 글자수", value=200)
-
-    guide = st.text_area(
-    "고객 가이드 / 업체 특장점",
-    value="",
-    height=300,
-    placeholder="""
-예시)
-- 직원이 직접 구워줌
-- 가족 외식 많음
-- 주차 편함
-- 매장 청결
-- 소수정예 수업
-- 상담 꼼꼼
-- 재방문율 높음
-"""
-)
-
-    must_include = st.text_input("필수 포함 키워드", value="")
-    
-    forbidden = st.text_input(
-        "금지 키워드(,로 구분)",
-        value=""
-    )
-
-    col_run, col_clear = st.columns(2)
-
-    run_btn = col_run.button("🚀 리뷰 생성 시작", use_container_width=True)
-    clear_btn = col_clear.button("🗑 결과 초기화", use_container_width=True)
+        col_run, col_clear = st.columns(2)
+        run_btn = col_run.button("🚀 리뷰 생성 시작", use_container_width=True)
+        clear_btn = col_clear.button("🗑 결과 초기화", use_container_width=True)
 
     if clear_btn:
         st.session_state.generated_results = []
@@ -746,16 +432,16 @@ if menu == "✍️ 원고 생성":
     if run_btn:
         if not CLAUDE_API_KEY:
             st.error("CLAUDE_API_KEY를 입력해주세요.")
-
         elif not guide.strip():
             st.error("고객 가이드 또는 업체 장점을 입력해주세요.")
-
         elif min_len > max_len:
             st.error("최소 글자수가 최대 글자수보다 클 수 없습니다.")
-
         else:
             client = Anthropic(api_key=CLAUDE_API_KEY)
             target_count = int(count)
+            mid_len = int((min_len + max_len) / 2)
+            all_reviews = []
+            batch_size = 10  # 균등한 분배와 정교한 제어를 위해 배치 단위 조정
 
             with right:
                 status_text = st.empty()
@@ -769,51 +455,41 @@ if menu == "✍️ 원고 생성":
                     unsafe_allow_html=True
                 )
 
-        try:
+            try:
+                selected_styles = random.choices(WRITING_STYLES, k=target_count)
+                all_situations = list(CATEGORY_PATTERNS[category_group].keys())
+                situation_cycle = (all_situations * ((target_count // len(all_situations)) + 1))[:target_count]
+                random.shuffle(situation_cycle)
 
-            selected_styles = random.choices(
-                WRITING_STYLES,
-                k=target_count
-            )
+                persona_keys = list(PERSONA_PROMPTS.keys())
+                persona_cycle = (persona_keys * ((target_count // len(persona_keys)) + 1))[:target_count]
+                random.shuffle(persona_cycle)
 
-            all_situations = list(CATEGORY_PATTERNS[category_group].keys())
+                total_count = target_count
 
-            situation_cycle = (
-                all_situations * ((target_count // len(all_situations)) + 1)
-            )[:target_count]
+                for start in range(0, total_count, batch_size):
+                    current_batch_size = min(batch_size, total_count - start)
+                    end = start + current_batch_size
 
-            random.shuffle(situation_cycle)
+                    # 구간에 따라 강제로 하한선과 상한선을 배분하여 골고루 섞이게 유도
+                    if start < total_count * 0.33:
+                        b_min, b_max = min_len, mid_len
+                    elif start < total_count * 0.66:
+                        b_min, b_max = int(mid_len * 0.9), int(mid_len * 1.1)
+                    else:
+                        b_min, b_max = mid_len, max_len
 
-            persona_keys = list(PERSONA_PROMPTS.keys())
-
-            persona_cycle = (
-                persona_keys * ((target_count // len(persona_keys)) + 1)
-            )[:target_count]
-
-            random.shuffle(persona_cycle)
-
-            
-            final_prompt = f"""
+                    final_prompt = f"""
 너는 실제 방문자가 작성한 것처럼 자연스러운 네이버 예약자 리뷰 원고를 작성한다.
 
 [페르소나 순서]
 각 리뷰는 아래 순서의 페르소나를 하나씩 적용해서 작성한다.
-각 리뷰는 서로 다른 사람이 쓴 것처럼 말투와 표현을 다르게 한다.
-각 리뷰는 반드시 서로 다른 페르소나 스타일을 명확하게 반영한다.
+{chr(10).join([f"{i+1}. {p}" for i, p in enumerate(persona_cycle[start:end])])}
 
-{chr(10).join([f"{i+1}. {p}" for i, p in enumerate(persona_cycle)])}
-
-[업종 대분류]
-{category_group}
-
-[상세 업종]
-{category}
+[업종 대분류] {category_group}  |  [상세 업종] {category}
 
 [방문 상황 분배]
-각 리뷰는 아래 방문 상황을 순서대로 하나씩 반영한다.
-단, 문장 시작을 방문 상황명 그대로 쓰지 말고 자연스럽게 녹여 쓴다.
-
-{chr(10).join([f"{i+1}. {s}" for i, s in enumerate(situation_cycle)])}
+{chr(10).join([f"{i+1}. {s}" for i, s in enumerate(situation_cycle[start:end])])}
 
 [기본 업종별 작성 방향]
 {CATEGORY_RULES.get(category_group, CATEGORY_RULES["일반/범용"])}
@@ -827,179 +503,65 @@ if menu == "✍️ 원고 생성":
 [금지 키워드 / 금지 표현]
 {forbidden if forbidden else "없음"}
 
-[금지 키워드 강제 규칙]
-- 위 금지 키워드나 금지 표현은 리뷰에 절대 포함하지 않는다.
-- 금지 키워드가 여러 개인 경우 쉼표, 콤마 기준으로 각각 금지어로 처리한다.
-- 금지 키워드와 비슷한 표현도 가능한 한 피한다.
-- 금지 키워드가 포함될 것 같으면 다른 표현으로 바꿔 작성한다.
-
-[페르소나 리스트]
-각 리뷰는 아래 페르소나 중 하나를 사용하여 작성한다.
-리뷰마다 서로 다른 사람이 작성한 것처럼 말투, 표현, 감정이 다르게 나오도록 한다.
-페르소나는 최대한 골고루 분배해서 사용한다.
-
-{chr(10).join([f"- {k}: {v}" for k, v in PERSONA_PROMPTS.items()])}
-
-[작성 방식 리스트]
-{chr(10).join([f"- {s}" for s in selected_styles])}
-
-[도입 방식 규칙]
-
-각 리뷰는 서로 다른 방식으로 시작한다.
-
-예시:
-- 방문 계기부터 시작
-- 바로 만족감부터 시작
-- 상황 설명부터 시작
-- 결과 이야기부터 시작
-- 직원 응대부터 시작
-- 혼잣말 느낌으로 시작
-- 비교 경험부터 시작
-- 짧은 감탄으로 시작
-- 바로 본론부터 시작
-- 이전 불편 경험부터 시작
-
-같은 도입 패턴 반복 금지.
-
 [작성 요청]
-리뷰를 총 {target_count}개 작성한다.
+리뷰를 총 {current_batch_size}개 작성한다.
+
+[글자 수 제한 규정 - 최우선 지시사항]
+- 이번에 생성하는 모든 리뷰는 공백을 포함하여 반드시 ** {b_min}자 이상, {b_max}자 이하 ** 범위 내로 작성해야 합니다.
+- 단 한 줄도 {b_min}자 미만으로 짧게 작성하거나 {b_max}자를 초과해서는 안 됩니다.
 
 [작성 규칙]
 1. 번호 없이 리뷰 문장만 작성한다.
 2. 각 리뷰는 반드시 줄바꿈으로 구분한다.
 3. 한 줄에 리뷰 1개만 작성한다.
-4. 각 리뷰는 반드시 {min_len}자 이상 {max_len}자 이하로 작성한다.
-5. 고객 가이드는 통째로 복붙하지 말고, 각 리뷰마다 일부 내용만 자연스럽게 반영한다.
-6. 모든 리뷰에 같은 장점을 전부 넣지 않는다.
-7. 리뷰마다 도입부, 문장 구조, 말투, 반영 요소를 다르게 한다.
-8. 고객 가이드에 없는 메뉴명, 시술명, 장비명, 효과는 임의로 만들지 않는다.
-9. 사진과 맞지 않는 음식명, 시술명, 서비스명은 억지로 넣지 않는다.
-10. 광고 문구처럼 보이는 표현은 피하고 실제 방문 후기처럼 작성한다.
-11. ㅎㅎ, ㅋㅋ, 이모티콘은 일부 리뷰에만 자연스럽게 사용한다.
-12. 너무 완벽하게 정리된 문장보다 실제 사람이 쓴 것처럼 자연스럽게 작성한다.
-13. 만족 표현 강도를 다양하게 사용한다. 예: 무난함, 괜찮음, 꽤 좋음, 만족, 다시 갈 듯
-14. 문장 끝맺음을 매번 다르게 작성한다.
-15. 리뷰 1개 안에서 같은 단어를 과하게 반복하지 않는다.
+4. 광고 문구처럼 보이는 표현은 피하고 실제 방문 후기처럼 작성한다.
+5. 문장 끝맺음을 매번 다르게 작성한다.
 
 [반복 방지 규칙]
 아래 표현은 그대로 사용하지 않는다.
 {BANNED_PHRASES}
-
-- “친절 + 청결 + 재방문” 순서로만 쓰지 않는다.
-- 매번 같은 끝맺음으로 마무리하지 않는다.
-- 장점 3개를 단순 나열하는 방식은 피한다.
-- 같은 도입부라도 뒤 문장 전개는 다르게 작성한다.
-- 전체 리뷰가 한 사람이 쓴 것처럼 보이지 않게 말투와 흐름을 섞는다.
-
-[도입 반복 금지 규칙]
-
-아래 패턴으로 반복 시작하지 않는다.
-
-- "처음 방문해봤는데"
-- "리뷰 보고 골랐는데"
-- "궁금해서 방문해봤는데"
-- "~했는데 ~좋았어요" 구조 반복
-- "후기가 좋은 이유가 있었네요"
-- "지인 추천으로 왔는데"
-
-같은 문장 구조가 연속으로 나오지 않게 한다.
-
-[중요 규칙 추가]
-- 모든 리뷰는 서로 다른 사람이 작성한 것처럼 자연스럽게 작성한다.
-- 같은 말투, 같은 표현이 반복되지 않도록 한다.
-- 동일한 페르소나가 연속으로 나오지 않도록 한다.
-
 """
-            all_reviews = []
 
-            batch_size = 50
-            total_count = target_count
-            mid_len = int((min_len + max_len) / 2)
-            count_per_group = total_count // 3
+                    message = client.messages.create(
+                        model="claude-sonnet-4-6",
+                        max_tokens=12000,
+                        temperature=1.0,
+                        system=(
+                            "당신은 자연스러운 네이버 예약자 리뷰 원고를 작성하는 전문가입니다. "
+                            "글자 수 하한선 규정을 엄격하게 준수하여 절대 짧은 문장을 생성하지 마십시오."
+                        ),
+                        messages=[{"role": "user", "content": final_prompt}]
+                    )
 
-            split_guide = f"""
-            [글자 수 편차 엄격 준수 규칙]
-            총 {total_count}개의 원고를 생성할 때, 평균치로 일괄 작성하지 말고 반드시 아래 3개 그룹으로 수량을 정확히 나누어 글자 수의 편차를 크게 하여 작성하세요.
-            - 그룹 1 (처음 {count_per_group}개): 공백 포함 {min_len}자 내외 (절대 길게 쓰지 말 것)
-            - 그룹 2 (다음 {count_per_group}개): 공백 포함 {mid_len}자 내외
-            - 그룹 3 (나머지 전체 원고): 공백 포함 {max_len}자 내외
-            """
-            final_prompt = f"{guide}\n\n{split_guide}"
-            
-            for start in range(0, total_count, batch_size):
+                    raw_text = message.content[0].text.strip()
+                    batch_reviews = clean_reviews(raw_text)
 
-                current_batch_size = min(batch_size, total_count - start)
-                end = start + current_batch_size
-            
-                message = client.messages.create(
-                    model="claude-sonnet-4-6",
-                    max_tokens=12000,
-                    temperature=1.0,
-                    system=(
-                        "당신은 자연스러운 네이버 예약자 리뷰 원고를 작성하는 전문가입니다. "
-                        "과장 없이 실제 방문 후기처럼 작성합니다. "
-                        "반드시 요청된 리뷰 개수를 모두 작성하세요. "
-                        "중간에 생략하거나 요약하지 마세요. "
-                        "각 리뷰는 독립적으로 작성하세요. "
-                        "서로 다른 사람이 작성한 것처럼 말투와 표현을 다양하게 섞으세요. "
-                        "문장이 반복되지 않도록 주의하세요."
-                    ),
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": f"""
-{final_prompt}
+                    # 가드레일: 지정된 최소 글자수 미만인 것은 누적시키지 않음
+                    for r in batch_reviews:
+                        if len(r) >= min_len:
+                            all_reviews.append(r)
 
-[현재 작성할 리뷰 범위]
-{start + 1}번 ~ {end}번 리뷰 작성
+                    time.sleep(1)
 
-[중요 작성 규칙]
-- 반드시 리뷰 {current_batch_size}개 전부 작성
-- 중간 생략 금지
-- 요약 금지
-- 번호 붙이지 말기
-- 한 줄에 리뷰 1개만 작성
-- 서로 다른 말투 사용
-- 실제 방문자가 작성한 느낌으로 자연스럽게 작성
-- 문장 반복 최소화
-- 다양한 연령대/성별 느낌 섞기
-- 이모티콘/ㅎㅎ/ㅋㅋ은 과하지 않게 자연스럽게 사용
-- 이전 리뷰들과 최대한 겹치지 않게 작성
+                st.session_state.generated_results = all_reviews[:target_count]
 
-
-"""
-                        }
-                    ]
+                save_review_batch(
+                    category_group,
+                    category,
+                    guide,
+                    st.session_state.generated_results
                 )
 
-                raw_text = message.content[0].text.strip()
+                with right:
+                    status_text.success("✅ 생성 완료")
 
-                batch_reviews = clean_reviews(raw_text)
+                if len(st.session_state.generated_results) < target_count:
+                    st.warning(
+                        f"요청한 {target_count}개 중 규격을 만족하는 {len(st.session_state.generated_results)}개만 생성됐습니다. 부족할 경우 다시 시도해 주세요."
+                    )
 
-                all_reviews.extend(batch_reviews)
-
-                time.sleep(1)
-
-            st.session_state.generated_results = all_reviews[:target_count]
-
-            save_review_batch(
-    category_group,
-    category,
-    guide,
-    st.session_state.generated_results
-)
-
-            with right:
-                status_text.success("✅ 생성 완료")
-
-            if len(st.session_state.generated_results) < target_count:
-                st.warning(
-                    f"요청한 {target_count}개 중 "
-                    f"{len(st.session_state.generated_results)}개만 생성됐습니다."
-                )
-   
-        except Exception as e:
-            st.error(f"오류: {str(e)}")
+            except Exception as e:
+                st.error(f"오류: {str(e)}")
 
     with right:
         st.markdown('<div class="panel-title">📝 생성 결과</div>', unsafe_allow_html=True)
@@ -1009,84 +571,32 @@ if menu == "✍️ 원고 생성":
             excel_ready = "\n".join(st.session_state.generated_results)
             copy_text = json.dumps(excel_ready)
 
-            components.html(
-                f"""
+            components.html(f"""
             <button onclick='navigator.clipboard.writeText({copy_text}); this.innerText="✅ 복사 완료";'
-                style="
-                    width:100%;
-                    height:48px;
-                    border:none;
-                    border-radius:15px;
-                    background:linear-gradient(90deg,#2563eb,#7c3aed,#db2777);
-                    color:white;
-                    font-size:15px;
-                    font-weight:900;
-                    cursor:pointer;
-                    margin-bottom:12px;
-                    box-shadow:0 12px 24px rgba(37,99,235,0.22);
-                ">
+                style="width:100%; height:48px; border:none; border-radius:15px; background:linear-gradient(90deg,#2563eb,#7c3aed,#db2777); color:white; font-size:15px; font-weight:900; cursor:pointer; margin-bottom:12px; box-shadow:0 12px 24px rgba(37,99,235,0.22);">
                 📋 전체 원고 복사하기
             </button>
-            """,
-            height=64
-        )
+            """, height=64)
 
-
-        excel_ready = "\n".join(st.session_state.generated_results)
-        
-        st.text_area(
-            "📋 엑셀 붙여넣기용 전체 복사",
-            value=excel_ready,
-            height=260
-        )
-
-        st.markdown("#### 미리보기")
-
-        for idx, text in enumerate(st.session_state.generated_results):
-            st.markdown(
-                f"""
-                <div class="result-box">
-                    <b>{idx + 1}.</b> {text}
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
+            st.text_area("📋 엑셀 붙여넣기용 전체 복사", value=excel_ready, height=260)
+            st.markdown("#### 미리보기")
+            for idx, text in enumerate(st.session_state.generated_results):
+                st.markdown(f'<div class="result-box"><b>{idx + 1}.</b> {text}</div>', unsafe_allow_html=True)
         else:
-            st.markdown(
-                """
-                <div class="info-box">
-                    아직 생성된 리뷰가 없습니다.<br>
-                    왼쪽에서 업종과 고객 가이드를 입력한 뒤 <b>리뷰 생성 시작</b> 버튼을 눌러주세요.
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+            st.markdown('<div class="info-box">아직 생성된 리뷰가 없습니다.<br>왼쪽에서 업종과 고객 가이드를 입력한 뒤 <b>리뷰 생성 시작</b> 버튼을 눌러주세요.</div>', unsafe_allow_html=True)
 
 st.markdown("## 📚 저장된 원고")
-
 conn = sqlite3.connect("reviews.db")
-
 saved_batches = conn.execute("""
     SELECT id, created_at, category_group, category, review_count, reviews_text
-    FROM review_batches
-    ORDER BY id DESC
-    LIMIT 100
+    FROM review_batches ORDER BY id DESC LIMIT 100
 """).fetchall()
-
 conn.close()
 
 if not saved_batches:
     st.info("저장된 원고가 없습니다.")
-
 else:
     for row in saved_batches:
         batch_id, created_at, category_group, category, review_count, reviews_text = row
-
         with st.expander(f"{created_at} | {category_group} | {category} | {review_count}개"):
-            st.text_area(
-                "전체 원고",
-                value=reviews_text,
-                height=300,
-                key=f"batch_{batch_id}"
-            )
+            st.text_area("전체 원고", value=reviews_text, height=300, key=f"batch_{batch_id}")
