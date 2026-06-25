@@ -755,13 +755,51 @@ if menu == "✍️ 원고 생성":
     
     left, right = st.columns([1, 1.25], gap="large")
 
-    with left:
-        st.markdown('<div class="panel-title">⚙️ 생성 설정</div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-caption">필요한 조건을 입력한 뒤 리뷰 생성 버튼을 눌러주세요.</div>', unsafe_allow_html=True)
+with left:
+    st.markdown("""
+    <div class="top-guide-card">
+        <div class="top-guide-inner">
+            <div class="top-guide-icon">✨</div>
+            <div>
+                <div class="top-guide-title">AI 자동 생성</div>
+                <div class="top-guide-desc">
+                    업종, 고객 가이드, 말투를 선택하면<br>
+                    자연스러운 예약자 리뷰를 한 번에 생성합니다.
+                </div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-        category_group = st.selectbox("업종 대분류 선택", list(CATEGORY_PATTERNS.keys()))
-        category = st.text_input("상세 업종", value="")
-        count = st.number_input("생성할 리뷰 수", min_value=1, max_value=200, value=10)
+    with st.container(border=True):
+        st.markdown(
+            '<div class="form-section-title"><span class="badge-purple">01</span>업체 정보</div>',
+            unsafe_allow_html=True
+        )
+
+        category_group = st.selectbox(
+            "업종 대분류 선택",
+            list(CATEGORY_PATTERNS.keys())
+        )
+
+        category = st.text_input(
+            "상세 업종",
+            value="",
+            placeholder="예) 브런치 카페, 이탈리안 레스토랑, 베이커리 등"
+        )
+
+    with st.container(border=True):
+        st.markdown(
+            '<div class="form-section-title"><span class="badge-pink">02</span>리뷰 설정</div>',
+            unsafe_allow_html=True
+        )
+
+        count = st.number_input(
+            "생성할 리뷰 수",
+            min_value=1,
+            max_value=200,
+            value=10
+        )
 
         col1, col2 = st.columns(2)
         with col1:
@@ -769,18 +807,34 @@ if menu == "✍️ 원고 생성":
         with col2:
             max_len = st.number_input("최대 글자수", value=200)
 
+    with st.container(border=True):
+        st.markdown(
+            '<div class="form-section-title"><span class="badge-mint">03</span>가이드 설정</div>',
+            unsafe_allow_html=True
+        )
+
         guide = st.text_area(
             "고객 가이드 / 업체 특장점",
             value="",
-            height=300,
-            placeholder="예시)\n- 직원이 직접 구워줌\n- 가족 외식 많음\n- 주차 편함\n- 매장 청결"
+            height=220,
+            placeholder="예시)\n- 직원이 직접 구워줌\n- 매장이 깔끔하고 분위기가 좋음\n- 재료가 신선하고 맛이 좋음\n- ㅎㅎ, 이모지 섞어서 리얼 후기 느낌으로 작성"
         )
-        must_include = st.text_input("필수 포함 키워드", value="")
-        forbidden = st.text_input("금지 키워드(,로 구분)", value="")
 
-        col_run, col_clear = st.columns(2)
-        run_btn = col_run.button("🚀 리뷰 생성 시작", use_container_width=True)
-        clear_btn = col_clear.button("🗑 결과 초기화", use_container_width=True)
+        must_include = st.text_input(
+            "필수 포함 키워드",
+            value="",
+            placeholder="예) 맛있어요, 친절해요, 재방문 의사 있어요"
+        )
+
+        forbidden = st.text_input(
+            "금지 키워드(,로 구분)",
+            value="",
+            placeholder="예) 별로, 최악, 과장 표현"
+        )
+
+    col_run, col_clear = st.columns(2)
+    run_btn = col_run.button("🚀 리뷰 생성 시작", use_container_width=True)
+    clear_btn = col_clear.button("🗑 결과 초기화", use_container_width=True)
 
     if clear_btn:
         st.session_state.generated_results = []
