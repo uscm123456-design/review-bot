@@ -234,6 +234,96 @@ def check_login():
 
 check_login()
 
+
+st.markdown("""
+<style>
+.top-guide-card {
+    background: linear-gradient(135deg, rgba(124,58,237,0.10), rgba(236,72,153,0.08));
+    border: 1px solid rgba(221,214,254,0.9);
+    border-radius: 24px;
+    padding: 28px 30px;
+    margin-bottom: 20px;
+    box-shadow: 0 14px 36px rgba(124,58,237,0.10);
+}
+
+.top-guide-inner {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.top-guide-icon {
+    width: 62px;
+    height: 62px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    box-shadow: 0 16px 32px rgba(124,58,237,0.28);
+}
+
+.top-guide-title {
+    font-size: 28px;
+    font-weight: 950;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.top-guide-desc {
+    color: #374151;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.form-section-title {
+    font-size: 19px;
+    font-weight: 950;
+    color: #111827;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-section-title span {
+    display: inline-flex;
+    width: 34px;
+    height: 30px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 950;
+}
+
+.badge-purple {
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+}
+
+.badge-pink {
+    background: linear-gradient(135deg, #ec4899, #f472b6);
+}
+
+.badge-mint {
+    background: linear-gradient(135deg, #14b8a6, #2dd4bf);
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    border-radius: 22px !important;
+    border: 1px solid rgba(226,232,240,0.95) !important;
+    box-shadow: 0 12px 32px rgba(15,23,42,0.05);
+    background: rgba(255,255,255,0.88);
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] > div {
+    padding: 22px 22px 18px !important;
+}
+</style>
+""", unsafe_allow_html=True)
 menu = st.sidebar.radio("메뉴", ["✍️ 원고 생성", "📚 저장된 원고"])
 
 CATEGORY_PATTERNS = {
