@@ -742,18 +742,37 @@ if menu == "✍️ 원고 생성":
         else:
             st.markdown('<div class="info-box">아직 생성된 리뷰가 없습니다.<br>왼쪽에서 업종과 고객 가이드를 입력한 뒤 <b>리뷰 생성 시작</b> 버튼을 눌러주세요.</div>', unsafe_allow_html=True)
 
-st.markdown("## 📚 저장된 원고")
-conn = sqlite3.connect("reviews.db")
-saved_batches = conn.execute("""
-    SELECT id, created_at, category_group, category, review_count, reviews_text
-    FROM review_batches ORDER BY id DESC LIMIT 100
-""").fetchall()
-conn.close()
+if menu == "📚 저장된 원고":
+    st.markdown("""
+    <div class="hero-card">
+        <div class="hero-badge">💾 Saved History</div>
+        <div class="hero-title">저장된 원고</div>
+        <div class="hero-desc">최근 생성된 리뷰 원고를 확인하고 다시 복사할 수 있습니다.</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-if not saved_batches:
-    st.info("저장된 원고가 없습니다.")
-else:
-    for row in saved_batches:
-        batch_id, created_at, category_group, category, review_count, reviews_text = row
-        with st.expander(f"{created_at} | {category_group} | {category} | {review_count}개"):
-            st.text_area("전체 원고", value=reviews_text, height=300, key=f"batch_{batch_id}")
+    conn = sqlite3.connect("reviews.db")
+    saved_batches = conn.execute("""
+        SELECT id, created_at, category_group, category, review_count, reviews_text
+        FROM review_batches ORDER BY id DESC LIMIT 100
+    """).fetchall()
+    conn.close()
+
+    if not saved_batches:
+        st.markdown("""
+        <div class="info-box">
+            아직 저장된 원고가 없습니다.<br>
+            원고 생성 메뉴에서 리뷰를 생성하면 이곳에 자동 저장됩니다.
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        for row in saved_batches:
+            batch_id, created_at, category_group, category, review_count, reviews_text = row
+
+            with st.expander(f"🗂 {created_at} | {category_group} | {category} | {review_count}개"):
+                st.text_area(
+                    "전체 원고",
+                    value=reviews_text,
+                    height=300,
+                    key=f"batch_{batch_id}"
+                )
