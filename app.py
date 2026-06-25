@@ -71,7 +71,7 @@ def check_login():
     .stApp {
         background:
             radial-gradient(circle at top left, rgba(124,58,237,0.18), transparent 32%),
-            radial-gradient(circle at bottom right, rgba(236,72,153,0.13), transparent 30%),
+            radial-gradient(circle at bottom right, rgba(236,72,153,0.14), transparent 30%),
             linear-gradient(135deg, #f8fafc 0%, #eef2ff 48%, #ffffff 100%);
     }
 
@@ -81,48 +81,77 @@ def check_login():
 
     .block-container {
         max-width: 460px;
-        padding-top: 12rem;
+        padding-top: 11rem;
+    }
+
+    .login-card {
+        background: rgba(255,255,255,0.88);
+        border: 1px solid rgba(226,232,240,0.9);
+        border-radius: 28px;
+        padding: 38px 34px 30px;
+        box-shadow: 0 24px 70px rgba(15,23,42,0.10);
+        backdrop-filter: blur(18px);
     }
 
     .login-brand {
         text-align: center;
-        margin-bottom: 18px;
+        margin-bottom: 28px;
+    }
+
+    .login-logo {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        margin: 0 auto 16px;
+        background: linear-gradient(135deg, #7c3aed, #a855f7, #ec4899);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: 950;
+        box-shadow: 0 16px 34px rgba(124,58,237,0.28);
     }
 
     .login-badge {
         display: inline-block;
-        padding: 7px 14px;
+        padding: 6px 13px;
         border-radius: 999px;
         background: rgba(124,58,237,0.10);
         color: #6d28d9;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 900;
-        margin-bottom: 18px;
+        margin-bottom: 14px;
         border: 1px solid rgba(124,58,237,0.18);
     }
 
     .login-title {
-        font-size: 42px;
+        font-size: 34px;
         font-weight: 950;
-        letter-spacing: -1.2px;
+        letter-spacing: -1px;
         color: #0f172a;
         margin-bottom: 10px;
     }
 
     .login-desc {
         color: #64748b;
-        font-size: 15px;
-        line-height: 1.6;
-        margin-bottom: 32px;
+        font-size: 14px;
+        line-height: 1.65;
     }
 
     [data-testid="stTextInput"] input {
         height: 56px !important;
-        border-radius: 16px;
-        border: 1px solid #dbeafe;
-        background: rgba(255,255,255,0.92);
-        font-size: 16px;
-        box-shadow: 0 10px 28px rgba(15,23,42,0.06);
+        border-radius: 16px !important;
+        border: 1px solid #dbeafe !important;
+        background: rgba(255,255,255,0.95) !important;
+        font-size: 16px !important;
+        padding-left: 16px !important;
+        box-shadow: 0 10px 28px rgba(15,23,42,0.05);
+    }
+
+    [data-testid="stTextInput"] input:focus {
+        border-color: #8b5cf6 !important;
+        box-shadow: 0 0 0 4px rgba(139,92,246,0.14) !important;
     }
 
     .stButton > button {
@@ -135,26 +164,44 @@ def check_login():
         font-size: 16px;
         font-weight: 900;
         box-shadow: 0 18px 36px rgba(124,58,237,0.28);
+        transition: all 0.18s ease;
+    }
+
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        color: white;
+        box-shadow: 0 24px 48px rgba(124,58,237,0.34);
     }
 
     .login-footer {
         text-align: center;
         color: #94a3b8;
         font-size: 12px;
-        margin-top: 28px;
+        margin-top: 22px;
     }
     </style>
     """, unsafe_allow_html=True)
 
     st.markdown("""
-    <div class="login-brand">
-        <div class="login-badge">USCM</div>
-        <div class="login-title">AI 리뷰 생성기</div>
-        <div class="login-desc">원고 생성기를 사용하려면<br>관리자 비밀번호를 입력해주세요.</div>
+    <div class="login-card">
+        <div class="login-brand">
+            <div class="login-logo">U</div>
+            <div class="login-badge">USCM INTERNAL SYSTEM</div>
+            <div class="login-title">AI Review Studio</div>
+            <div class="login-desc">
+                예약자 원고 생성 시스템입니다.<br>
+                관리자 비밀번호를 입력해주세요.
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    password = st.text_input("비밀번호", type="password", label_visibility="collapsed", placeholder="비밀번호 입력")
+    password = st.text_input(
+        "비밀번호",
+        type="password",
+        label_visibility="collapsed",
+        placeholder="비밀번호 입력"
+    )
 
     if st.button("로그인"):
         if password == APP_PASSWORD:
@@ -165,6 +212,7 @@ def check_login():
 
     st.markdown('<div class="login-footer">© USCM AI Review Studio. Private Access Only.</div>', unsafe_allow_html=True)
     st.stop()
+
 
 check_login()
 
