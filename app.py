@@ -66,202 +66,85 @@ def check_login():
     if st.session_state.authenticated:
         return
 
-st.markdown("""
-<style>
-/* 전체 배경 */
-.stApp {
-    background:
-        radial-gradient(circle at top left, rgba(124,58,237,0.14), transparent 30%),
-        radial-gradient(circle at top right, rgba(236,72,153,0.12), transparent 28%),
-        linear-gradient(135deg, #f8fafc 0%, #f5f3ff 45%, #ffffff 100%);
-    color: #0f172a;
-}
+    st.markdown("""
+    <style>
+    .stApp {
+        background:
+            radial-gradient(circle at top left, rgba(124,58,237,0.18), transparent 32%),
+            radial-gradient(circle at bottom right, rgba(236,72,153,0.13), transparent 30%),
+            linear-gradient(135deg, #f8fafc 0%, #eef2ff 48%, #ffffff 100%);
+    }
 
-/* 상단 기본 헤더 투명 */
-[data-testid="stHeader"] {
-    background: transparent;
-}
+    [data-testid="stHeader"] {
+        background: transparent;
+    }
 
-/* 전체 컨테이너 */
-.block-container {
-    max-width: 1320px;
-    padding-top: 2.5rem;
-    padding-bottom: 4rem;
-}
+    .block-container {
+        max-width: 460px;
+        padding-top: 12rem;
+    }
 
-/* 사이드바 */
-section[data-testid="stSidebar"] {
-    width: 240px !important;
-    min-width: 240px !important;
-    background: rgba(255,255,255,0.82);
-    backdrop-filter: blur(18px);
-    border-right: 1px solid rgba(226,232,240,0.9);
-}
+    .login-brand {
+        text-align: center;
+        margin-bottom: 18px;
+    }
 
-section[data-testid="stSidebar"] * {
-    font-weight: 700;
-}
+    .login-badge {
+        display: inline-block;
+        padding: 7px 14px;
+        border-radius: 999px;
+        background: rgba(124,58,237,0.10);
+        color: #6d28d9;
+        font-size: 13px;
+        font-weight: 900;
+        margin-bottom: 18px;
+        border: 1px solid rgba(124,58,237,0.18);
+    }
 
-/* 히어로 카드 */
-.hero-card {
-    background:
-        linear-gradient(135deg, rgba(124,58,237,0.96), rgba(168,85,247,0.94), rgba(236,72,153,0.92));
-    border-radius: 28px;
-    padding: 34px 34px;
-    color: white;
-    box-shadow: 0 24px 70px rgba(124,58,237,0.28);
-    margin-bottom: 26px;
-    position: relative;
-    overflow: hidden;
-}
+    .login-title {
+        font-size: 42px;
+        font-weight: 950;
+        letter-spacing: -1.2px;
+        color: #0f172a;
+        margin-bottom: 10px;
+    }
 
-.hero-card::after {
-    content: "";
-    position: absolute;
-    right: -80px;
-    top: -80px;
-    width: 220px;
-    height: 220px;
-    background: rgba(255,255,255,0.16);
-    border-radius: 999px;
-}
+    .login-desc {
+        color: #64748b;
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 32px;
+    }
 
-.hero-badge {
-    display: inline-block;
-    background: rgba(255,255,255,0.22);
-    padding: 7px 14px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 900;
-    margin-bottom: 14px;
-}
+    [data-testid="stTextInput"] input {
+        height: 56px !important;
+        border-radius: 16px;
+        border: 1px solid #dbeafe;
+        background: rgba(255,255,255,0.92);
+        font-size: 16px;
+        box-shadow: 0 10px 28px rgba(15,23,42,0.06);
+    }
 
-.hero-title {
-    font-size: 36px;
-    font-weight: 950;
-    margin-bottom: 10px;
-    letter-spacing: -0.8px;
-}
+    .stButton > button {
+        width: 100%;
+        height: 56px;
+        border-radius: 16px;
+        border: none;
+        background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899);
+        color: white;
+        font-size: 16px;
+        font-weight: 900;
+        box-shadow: 0 18px 36px rgba(124,58,237,0.28);
+    }
 
-.hero-desc {
-    font-size: 15px;
-    line-height: 1.7;
-    opacity: 0.96;
-}
-
-/* 패널 타이틀 */
-.panel-title {
-    font-size: 21px;
-    font-weight: 950;
-    color: #111827;
-    margin: 4px 0 8px;
-}
-
-.section-caption {
-    color: #64748b;
-    font-size: 14px;
-    margin-bottom: 18px;
-}
-
-/* 입력/결과 카드 느낌 */
-[data-testid="column"] {
-    background: rgba(255,255,255,0.78);
-    border: 1px solid rgba(226,232,240,0.92);
-    border-radius: 24px;
-    padding: 24px 24px 18px;
-    box-shadow: 0 18px 50px rgba(15,23,42,0.07);
-}
-
-/* 입력창 */
-.stTextInput input,
-.stNumberInput input,
-.stTextArea textarea,
-.stSelectbox div[data-baseweb="select"] {
-    border-radius: 14px !important;
-    border-color: #e2e8f0 !important;
-}
-
-.stTextInput input:focus,
-.stNumberInput input:focus,
-.stTextArea textarea:focus {
-    border-color: #8b5cf6 !important;
-    box-shadow: 0 0 0 4px rgba(139,92,246,0.14) !important;
-}
-
-/* 버튼 */
-.stButton > button {
-    height: 50px;
-    border-radius: 15px;
-    font-weight: 900;
-    border: none;
-    background: linear-gradient(90deg, #7c3aed, #a855f7, #ec4899);
-    color: white;
-    box-shadow: 0 14px 26px rgba(124,58,237,0.25);
-    transition: all 0.18s ease;
-}
-
-.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 18px 34px rgba(124,58,237,0.32);
-    color: white;
-}
-
-.stButton > button:active {
-    transform: scale(0.97);
-}
-
-/* 로딩 카드 */
-.loading-card {
-    background: rgba(255,255,255,0.92);
-    border: 1px solid #ddd6fe;
-    border-radius: 18px;
-    padding: 18px 20px;
-    color: #6d28d9;
-    font-weight: 900;
-    box-shadow: 0 14px 32px rgba(124,58,237,0.12);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.loader {
-    width: 18px;
-    height: 18px;
-    border: 3px solid #ddd6fe;
-    border-top: 3px solid #8b5cf6;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* 결과 박스 */
-.result-box {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    line-height: 1.65;
-    font-size: 15px;
-    color: #1f2937;
-    box-shadow: 0 8px 20px rgba(15,23,42,0.04);
-}
-
-/* 안내 박스 */
-.info-box {
-    background: #f8fafc;
-    border: 1px dashed #cbd5e1;
-    border-radius: 18px;
-    padding: 26px 20px;
-    text-align: center;
-    color: #64748b;
-    line-height: 1.7;
-}
-</style>
-""", unsafe_allow_html=True)
+    .login-footer {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 12px;
+        margin-top: 28px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     st.markdown("""
     <div class="login-brand">
@@ -271,7 +154,7 @@ section[data-testid="stSidebar"] * {
     </div>
     """, unsafe_allow_html=True)
 
-    password = st.text_input("비밀번호", type="password", label_visibility="collapsed", placeholder="")
+    password = st.text_input("비밀번호", type="password", label_visibility="collapsed", placeholder="비밀번호 입력")
 
     if st.button("로그인"):
         if password == APP_PASSWORD:
@@ -280,7 +163,7 @@ section[data-testid="stSidebar"] * {
         else:
             st.error("비밀번호가 틀렸습니다.")
 
-    st.markdown('<div class="login-footer">© AI Review Generator. Private Access Only.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="login-footer">© USCM AI Review Studio. Private Access Only.</div>', unsafe_allow_html=True)
     st.stop()
 
 check_login()
