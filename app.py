@@ -80,8 +80,8 @@ def check_login():
     }
 
     .block-container {
-        max-width: 460px;
-        padding-top: 11rem;
+        max-width: 520px;
+        padding-top: 10rem;
     }
 
     .login-card {
@@ -139,20 +139,38 @@ def check_login():
         line-height: 1.65;
     }
 
-    [data-testid="stTextInput"] input {
-        height: 56px !important;
-        border-radius: 16px !important;
-        border: 1px solid #dbeafe !important;
-        background: rgba(255,255,255,0.95) !important;
-        font-size: 16px !important;
-        padding-left: 16px !important;
-        box-shadow: 0 10px 28px rgba(15,23,42,0.05);
-    }
+    [data-testid="stTextInput"] {
+    width: 100% !important;
+}
 
-    [data-testid="stTextInput"] input:focus {
-        border-color: #8b5cf6 !important;
-        box-shadow: 0 0 0 4px rgba(139,92,246,0.14) !important;
-    }
+    [data-testid="stTextInput"] > div {
+    width: 100% !important;
+}
+
+    [data-testid="stTextInput"] div[data-baseweb="input"] {
+    width: 100% !important;
+    height: 52px !important;
+    border-radius: 0 !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+}
+
+    [data-testid="stTextInput"] input {
+    height: 52px !important;
+    min-height: 52px !important;
+    border-radius: 0 !important;
+    border: none !important;
+    background: #ffffff !important;
+    font-size: 15px !important;
+    padding-left: 14px !important;
+    box-shadow: none !important;
+}
+
+    [data-testid="stTextInput"] div[data-baseweb="input"]:focus-within {
+    border: 1px solid #7c3aed !important;
+    box-shadow: none !important;
+}
 
     .stButton > button {
         width: 100%;
