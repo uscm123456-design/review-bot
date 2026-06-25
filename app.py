@@ -16,6 +16,7 @@ st.set_page_config(
     layout="wide"
 )
 
+
 def init_db():
     conn = sqlite3.connect("reviews.db")
     cur = conn.cursor()
@@ -32,6 +33,7 @@ def init_db():
     """)
     conn.commit()
     conn.close()
+
 
 def save_review_batch(category_group, category, guide, reviews):
     conn = sqlite3.connect("reviews.db")
@@ -53,66 +55,52 @@ def save_review_batch(category_group, category, guide, reviews):
     conn.commit()
     conn.close()
 
+
 init_db()
 
 if not APP_PASSWORD:
     st.error("APP_PASSWORD를 secrets에 추가해주세요.")
     st.stop()
 
-def check_login():
-    if "authenticated" not in st.session_state:
-        st.session_state.authenticated = False
 
-    if st.session_state.authenticated:
-        return
-
+def inject_login_style():
     st.markdown("""
     <style>
     .stApp {
         background:
-            radial-gradient(circle at top left, rgba(124,58,237,0.18), transparent 32%),
-            radial-gradient(circle at bottom right, rgba(236,72,153,0.14), transparent 30%),
+            radial-gradient(circle at 8% 12%, rgba(124,58,237,0.22), transparent 34%),
+            radial-gradient(circle at 92% 88%, rgba(236,72,153,0.18), transparent 34%),
             linear-gradient(135deg, #f8fafc 0%, #eef2ff 48%, #ffffff 100%);
     }
-
-    [data-testid="stHeader"] {
-        background: transparent;
-    }
-
+    [data-testid="stHeader"] { background: transparent; }
     .block-container {
         max-width: 520px;
-        padding-top: 10rem;
+        padding-top: 9.5rem;
     }
-
     .login-card {
-        background: rgba(255,255,255,0.88);
+        background: rgba(255,255,255,0.90);
         border: 1px solid rgba(226,232,240,0.9);
-        border-radius: 28px;
+        border-radius: 30px;
         padding: 38px 34px 30px;
-        box-shadow: 0 24px 70px rgba(15,23,42,0.10);
+        box-shadow: 0 28px 80px rgba(15,23,42,0.12);
         backdrop-filter: blur(18px);
-    }
-
-    .login-brand {
         text-align: center;
-        margin-bottom: 28px;
+        margin-bottom: 18px;
     }
-
     .login-logo {
-        width: 58px;
-        height: 58px;
-        border-radius: 18px;
+        width: 64px;
+        height: 64px;
+        border-radius: 20px;
         margin: 0 auto 16px;
         background: linear-gradient(135deg, #7c3aed, #a855f7, #ec4899);
         color: white;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
+        font-size: 26px;
         font-weight: 950;
         box-shadow: 0 16px 34px rgba(124,58,237,0.28);
     }
-
     .login-badge {
         display: inline-block;
         padding: 6px 13px;
@@ -124,7 +112,6 @@ def check_login():
         margin-bottom: 14px;
         border: 1px solid rgba(124,58,237,0.18);
     }
-
     .login-title {
         font-size: 34px;
         font-weight: 950;
@@ -132,46 +119,35 @@ def check_login():
         color: #0f172a;
         margin-bottom: 10px;
     }
-
     .login-desc {
         color: #64748b;
         font-size: 14px;
         line-height: 1.65;
     }
-
-    [data-testid="stTextInput"] {
-    width: 100% !important;
-}
-
-    [data-testid="stTextInput"] > div {
-    width: 100% !important;
-}
-
+    [data-testid="stTextInput"] { width: 100% !important; }
+    [data-testid="stTextInput"] > div { width: 100% !important; }
     [data-testid="stTextInput"] div[data-baseweb="input"] {
-    width: 100% !important;
-    height: 52px !important;
-    border-radius: 0 !important;
-    border: 1px solid #cbd5e1 !important;
-    background: #ffffff !important;
-    box-shadow: none !important;
-}
-
+        width: 100% !important;
+        height: 52px !important;
+        border-radius: 0 !important;
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+    }
     [data-testid="stTextInput"] input {
-    height: 52px !important;
-    min-height: 52px !important;
-    border-radius: 0 !important;
-    border: none !important;
-    background: #ffffff !important;
-    font-size: 15px !important;
-    padding-left: 14px !important;
-    box-shadow: none !important;
-}
-
+        height: 52px !important;
+        min-height: 52px !important;
+        border-radius: 0 !important;
+        border: none !important;
+        background: #ffffff !important;
+        font-size: 15px !important;
+        padding-left: 14px !important;
+        box-shadow: none !important;
+    }
     [data-testid="stTextInput"] div[data-baseweb="input"]:focus-within {
-    border: 1px solid #7c3aed !important;
-    box-shadow: none !important;
-}
-
+        border: 1px solid #7c3aed !important;
+        box-shadow: none !important;
+    }
     .stButton > button {
         width: 100%;
         height: 56px;
@@ -184,13 +160,11 @@ def check_login():
         box-shadow: 0 18px 36px rgba(124,58,237,0.28);
         transition: all 0.18s ease;
     }
-
     .stButton > button:hover {
         transform: translateY(-2px);
         color: white;
         box-shadow: 0 24px 48px rgba(124,58,237,0.34);
     }
-
     .login-footer {
         text-align: center;
         color: #94a3b8;
@@ -200,16 +174,24 @@ def check_login():
     </style>
     """, unsafe_allow_html=True)
 
+
+def check_login():
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+
+    if st.session_state.authenticated:
+        return
+
+    inject_login_style()
+
     st.markdown("""
     <div class="login-card">
-        <div class="login-brand">
-            <div class="login-logo">U</div>
-            <div class="login-badge">USCM INTERNAL SYSTEM</div>
-            <div class="login-title">AI Review Studio</div>
-            <div class="login-desc">
-                예약자 원고 생성 시스템입니다.<br>
-                관리자 비밀번호를 입력해주세요.
-            </div>
+        <div class="login-logo">U</div>
+        <div class="login-badge">USCM INTERNAL SYSTEM</div>
+        <div class="login-title">AI Review Studio</div>
+        <div class="login-desc">
+            예약자 원고 생성 시스템입니다.<br>
+            관리자 비밀번호를 입력해주세요.
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -234,137 +216,6 @@ def check_login():
 
 check_login()
 
-
-st.markdown("""
-<style>
-.top-guide-card {
-    background: linear-gradient(135deg, rgba(124,58,237,0.10), rgba(236,72,153,0.08));
-    border: 1px solid rgba(221,214,254,0.9);
-    border-radius: 24px;
-    padding: 28px 30px;
-    margin-bottom: 20px;
-    box-shadow: 0 14px 36px rgba(124,58,237,0.10);
-}
-
-.top-guide-inner {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-}
-
-.top-guide-icon {
-    width: 62px;
-    height: 62px;
-    border-radius: 22px;
-    background: linear-gradient(135deg, #7c3aed, #a855f7);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    box-shadow: 0 16px 32px rgba(124,58,237,0.28);
-}
-
-.top-guide-title {
-    font-size: 28px;
-    font-weight: 950;
-    color: #111827;
-    margin-bottom: 8px;
-}
-
-.top-guide-desc {
-    color: #374151;
-    font-size: 15px;
-    line-height: 1.7;
-}
-
-.form-section-title {
-    font-size: 19px;
-    font-weight: 950;
-    color: #111827;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.form-section-title span {
-    display: inline-flex;
-    width: 34px;
-    height: 30px;
-    border-radius: 10px;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 14px;
-    font-weight: 950;
-}
-
-.badge-purple {
-    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
-}
-
-.badge-pink {
-    background: linear-gradient(135deg, #ec4899, #f472b6);
-}
-
-.badge-mint {
-    background: linear-gradient(135deg, #14b8a6, #2dd4bf);
-}
-
-div[data-testid="stVerticalBlockBorderWrapper"] {
-    border-radius: 22px !important;
-    border: 1px solid rgba(226,232,240,0.95) !important;
-    box-shadow: 0 12px 32px rgba(15,23,42,0.05);
-    background: rgba(255,255,255,0.88);
-}
-
-div[data-testid="stVerticalBlockBorderWrapper"] > div {
-    padding: 22px 22px 18px !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-.result-header-card {
-    background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(236,72,153,0.10));
-    border: 1px solid rgba(221,214,254,0.95);
-    border-radius: 24px;
-    padding: 26px 28px;
-    margin-bottom: 20px;
-    box-shadow: 0 14px 36px rgba(124,58,237,0.10);
-    display: flex;
-    align-items: center;
-    gap: 18px;
-}
-
-.result-header-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 22px;
-    background: linear-gradient(135deg, #ec4899, #8b5cf6);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    box-shadow: 0 16px 32px rgba(236,72,153,0.24);
-    flex-shrink: 0;
-}
-
-.result-header-title {
-    font-size: 28px;
-    font-weight: 950;
-    color: #111827;
-    margin-bottom: 8px;
-}
-
-.result-header-desc {
-    color: #374151;
-    font-size: 15px;
-    line-height: 1.7;
-}
-
-menu = st.sidebar.radio("메뉴", ["✍️ 원고 생성", "📚 저장된 원고"])
 
 CATEGORY_PATTERNS = {
     "음식점/카페": {
@@ -588,64 +439,55 @@ def is_duplicate_review(review, existing_reviews):
         if old[:20] == review_start:
             return True
     return False
-    
-if "generated_results" not in st.session_state:
-    st.session_state.generated_results = []
 
+
+def inject_main_style():
     st.markdown("""
     <style>
     .stApp {
         background:
-            radial-gradient(circle at top left, rgba(124,58,237,0.12), transparent 32%),
-            radial-gradient(circle at top right, rgba(236,72,153,0.10), transparent 30%),
-            linear-gradient(135deg, #f8fafc 0%, #f5f3ff 48%, #ffffff 100%);
+            radial-gradient(circle at 4% 8%, rgba(124,58,237,0.18), transparent 30%),
+            radial-gradient(circle at 96% 10%, rgba(236,72,153,0.14), transparent 28%),
+            radial-gradient(circle at 70% 95%, rgba(20,184,166,0.10), transparent 26%),
+            linear-gradient(135deg, #fbfbff 0%, #f5f3ff 45%, #fff7fb 100%);
         color: #0f172a;
-}
-
-    [data-testid="stHeader"] {
-        background: transparent;
-}
-
+    }
+    [data-testid="stHeader"] { background: transparent; }
     .block-container {
-        max-width: 1320px;
-        padding-top: 2.4rem;
+        max-width: 1360px;
+        padding-top: 2.2rem;
         padding-bottom: 4rem;
-}
-
+    }
     section[data-testid="stSidebar"] {
-        width: 235px !important;
-        min-width: 235px !important;
-        background: rgba(255,255,255,0.86);
+        width: 240px !important;
+        min-width: 240px !important;
+        background: rgba(255,255,255,0.78);
         backdrop-filter: blur(18px);
-        border-right: 1px solid rgba(226,232,240,0.9);
-}
-
-    section[data-testid="stSidebar"] * {
-        font-weight: 750;
-}
+        border-right: 1px solid rgba(226,232,240,0.85);
+    }
+    section[data-testid="stSidebar"] * { font-weight: 750; }
 
     .hero-card {
-        background: linear-gradient(135deg, #6d28d9, #8b5cf6, #ec4899);
-        border-radius: 28px;
-        padding: 34px 34px;
+        background:
+            linear-gradient(135deg, rgba(109,40,217,0.97), rgba(139,92,246,0.95), rgba(236,72,153,0.94));
+        border-radius: 30px;
+        padding: 36px 36px;
         color: white;
-        box-shadow: 0 24px 70px rgba(124,58,237,0.28);
+        box-shadow: 0 26px 80px rgba(124,58,237,0.30);
         margin-bottom: 26px;
         position: relative;
         overflow: hidden;
-}
-
+    }
     .hero-card::after {
         content: "";
         position: absolute;
-        right: -70px;
-        top: -80px;
-        width: 220px;
-        height: 220px;
+        right: -72px;
+        top: -82px;
+        width: 240px;
+        height: 240px;
         background: rgba(255,255,255,0.14);
         border-radius: 999px;
-}
-
+    }
     .hero-badge {
         display: inline-block;
         background: rgba(255,255,255,0.20);
@@ -654,41 +496,98 @@ if "generated_results" not in st.session_state:
         font-size: 13px;
         font-weight: 900;
         margin-bottom: 14px;
-}
-
+    }
     .hero-title {
-        font-size: 36px;
+        font-size: 37px;
         font-weight: 950;
         margin-bottom: 10px;
         letter-spacing: -0.8px;
-}
-
+    }
     .hero-desc {
         font-size: 15px;
         line-height: 1.7;
         opacity: 0.96;
-}
-
-    .panel-title {
-        font-size: 21px;
-        font-weight: 950;
-        color: #111827;
-        margin: 4px 0 8px;
-}
-
-    .section-caption {
-        color: #64748b;
-        font-size: 14px;
-        margin-bottom: 18px;
-}
+    }
 
     [data-testid="column"] {
-        background: rgba(255,255,255,0.82);
-        border: 1px solid rgba(226,232,240,0.94);
+        background: rgba(255,255,255,0.70);
+        border: 1px solid rgba(226,232,240,0.92);
+        border-radius: 28px;
+        padding: 24px 24px 20px;
+        box-shadow: 0 18px 54px rgba(15,23,42,0.08);
+        backdrop-filter: blur(14px);
+    }
+
+    .top-guide-card, .result-header-card {
+        background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(236,72,153,0.10));
+        border: 1px solid rgba(221,214,254,0.95);
         border-radius: 24px;
-        padding: 24px 24px 18px;
-        box-shadow: 0 18px 48px rgba(15,23,42,0.07);
-}
+        padding: 26px 28px;
+        margin-bottom: 20px;
+        box-shadow: 0 14px 36px rgba(124,58,237,0.10);
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+    .top-guide-icon, .result-header-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 22px;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        box-shadow: 0 16px 32px rgba(124,58,237,0.24);
+        flex-shrink: 0;
+    }
+    .top-guide-icon { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+    .result-header-icon { background: linear-gradient(135deg, #ec4899, #8b5cf6); }
+    .top-guide-title, .result-header-title {
+        font-size: 28px;
+        font-weight: 950;
+        color: #111827;
+        margin-bottom: 8px;
+    }
+    .top-guide-desc, .result-header-desc {
+        color: #374151;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .form-section-title {
+        font-size: 19px;
+        font-weight: 950;
+        color: #111827;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .form-section-title span {
+        display: inline-flex;
+        width: 34px;
+        height: 30px;
+        border-radius: 10px;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 14px;
+        font-weight: 950;
+    }
+    .badge-purple { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
+    .badge-pink { background: linear-gradient(135deg, #ec4899, #f472b6); }
+    .badge-mint { background: linear-gradient(135deg, #14b8a6, #2dd4bf); }
+
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: 22px !important;
+        border: 1px solid rgba(226,232,240,0.95) !important;
+        box-shadow: 0 12px 32px rgba(15,23,42,0.05);
+        background: rgba(255,255,255,0.88);
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"] > div {
+        padding: 22px 22px 18px !important;
+    }
 
     .stTextInput input,
     .stNumberInput input,
@@ -697,19 +596,17 @@ if "generated_results" not in st.session_state:
         border: 1px solid #e2e8f0 !important;
         background: #ffffff !important;
         font-size: 15px !important;
-}
-
+    }
     .stTextInput input:focus,
     .stNumberInput input:focus,
     .stTextArea textarea:focus {
         border-color: #8b5cf6 !important;
         box-shadow: 0 0 0 4px rgba(139,92,246,0.13) !important;
-}
-
+    }
     .stSelectbox div[data-baseweb="select"] > div {
-         border-radius: 14px !important;
+        border-radius: 14px !important;
         border-color: #e2e8f0 !important;
-}
+    }
 
     .stButton > button {
         height: 50px;
@@ -720,17 +617,13 @@ if "generated_results" not in st.session_state:
         color: white;
         box-shadow: 0 14px 26px rgba(124,58,237,0.25);
         transition: all 0.18s ease;
-}
-
+    }
     .stButton > button:hover {
         transform: translateY(-2px);
         box-shadow: 0 18px 34px rgba(124,58,237,0.32);
         color: white;
-}
-
-    .stButton > button:active {
-        transform: scale(0.97);
-}
+    }
+    .stButton > button:active { transform: scale(0.97); }
 
     .loading-card {
         background: rgba(255,255,255,0.94);
@@ -743,8 +636,7 @@ if "generated_results" not in st.session_state:
         display: flex;
         align-items: center;
         gap: 12px;
-}
-
+    }
     .loader {
         width: 18px;
         height: 18px;
@@ -752,53 +644,62 @@ if "generated_results" not in st.session_state:
         border-top: 3px solid #8b5cf6;
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
-}
-
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-}
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .result-box {
         background: #ffffff;
         border: 1px solid #e5e7eb;
         border-radius: 16px;
         padding: 14px 16px;
-          margin-bottom: 10px;
+        margin-bottom: 10px;
         line-height: 1.65;
         font-size: 15px;
         color: #1f2937;
         box-shadow: 0 8px 20px rgba(15,23,42,0.04);
-}
-
+    }
     .info-box {
-        background: #f8fafc;
+        background: rgba(248,250,252,0.92);
         border: 1px dashed #cbd5e1;
         border-radius: 18px;
-        padding: 26px 20px;
+        padding: 30px 20px;
         text-align: center;
         color: #64748b;
         line-height: 1.7;
-}
-</style>
-""", unsafe_allow_html=True)
+    }
+    .preview-title {
+        font-size: 17px;
+        font-weight: 950;
+        margin: 18px 0 12px;
+        color: #111827;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
+
+
+inject_main_style()
+
+if "generated_results" not in st.session_state:
+    st.session_state.generated_results = []
+
+menu = st.sidebar.radio("메뉴", ["✍️ 원고 생성", "📚 저장된 원고"])
 
 
 if menu == "✍️ 원고 생성":
     st.markdown("""
-<div class="hero-card">
-    <div class="hero-badge">✨ AI 자동 생성</div>
-    <div class="hero-title">네이버 예약자 리뷰 원고 생성기</div>
-    <div class="hero-desc">업종, 고객 가이드, 말투를 선택하면<br>자연스러운 예약자 리뷰를 한 번에 생성합니다.</div>
-</div>
-""", unsafe_allow_html=True)
-    
+    <div class="hero-card">
+        <div class="hero-badge">✨ AI 자동 생성</div>
+        <div class="hero-title">네이버 예약자 리뷰 원고 생성기</div>
+        <div class="hero-desc">업종, 고객 가이드, 말투를 선택하면<br>자연스러운 예약자 리뷰를 한 번에 생성합니다.</div>
+    </div>
+    """, unsafe_allow_html=True)
+
     left, right = st.columns([1, 1.25], gap="large")
 
-with left:
-    st.markdown("""
-    <div class="top-guide-card">
-        <div class="top-guide-inner">
+    with left:
+        st.markdown("""
+        <div class="top-guide-card">
             <div class="top-guide-icon">✨</div>
             <div>
                 <div class="top-guide-title">AI 자동 생성</div>
@@ -808,73 +709,72 @@ with left:
                 </div>
             </div>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-    with st.container(border=True):
-        st.markdown(
-            '<div class="form-section-title"><span class="badge-purple">01</span>업체 정보</div>',
-            unsafe_allow_html=True
-        )
+        with st.container(border=True):
+            st.markdown(
+                '<div class="form-section-title"><span class="badge-purple">01</span>업체 정보</div>',
+                unsafe_allow_html=True
+            )
 
-        category_group = st.selectbox(
-            "업종 대분류 선택",
-            list(CATEGORY_PATTERNS.keys())
-        )
+            category_group = st.selectbox(
+                "업종 대분류 선택",
+                list(CATEGORY_PATTERNS.keys())
+            )
 
-        category = st.text_input(
-            "상세 업종",
-            value="",
-            placeholder="예) 브런치 카페, 이탈리안 레스토랑, 베이커리 등"
-        )
+            category = st.text_input(
+                "상세 업종",
+                value="",
+                placeholder="예) 브런치 카페, 이탈리안 레스토랑, 베이커리 등"
+            )
 
-    with st.container(border=True):
-        st.markdown(
-            '<div class="form-section-title"><span class="badge-pink">02</span>리뷰 설정</div>',
-            unsafe_allow_html=True
-        )
+        with st.container(border=True):
+            st.markdown(
+                '<div class="form-section-title"><span class="badge-pink">02</span>리뷰 설정</div>',
+                unsafe_allow_html=True
+            )
 
-        count = st.number_input(
-            "생성할 리뷰 수",
-            min_value=1,
-            max_value=200,
-            value=10
-        )
+            count = st.number_input(
+                "생성할 리뷰 수",
+                min_value=1,
+                max_value=200,
+                value=10
+            )
 
-        col1, col2 = st.columns(2)
-        with col1:
-            min_len = st.number_input("최소 글자수", value=100)
-        with col2:
-            max_len = st.number_input("최대 글자수", value=200)
+            col1, col2 = st.columns(2)
+            with col1:
+                min_len = st.number_input("최소 글자수", value=100)
+            with col2:
+                max_len = st.number_input("최대 글자수", value=200)
 
-    with st.container(border=True):
-        st.markdown(
-            '<div class="form-section-title"><span class="badge-mint">03</span>가이드 설정</div>',
-            unsafe_allow_html=True
-        )
+        with st.container(border=True):
+            st.markdown(
+                '<div class="form-section-title"><span class="badge-mint">03</span>가이드 설정</div>',
+                unsafe_allow_html=True
+            )
 
-        guide = st.text_area(
-            "고객 가이드 / 업체 특장점",
-            value="",
-            height=220,
-            placeholder="예시)\n- 직원이 직접 구워줌\n- 매장이 깔끔하고 분위기가 좋음\n- 재료가 신선하고 맛이 좋음\n- ㅎㅎ, 이모지 섞어서 리얼 후기 느낌으로 작성"
-        )
+            guide = st.text_area(
+                "고객 가이드 / 업체 특장점",
+                value="",
+                height=220,
+                placeholder="예시)\n- 직원이 직접 구워줌\n- 매장이 깔끔하고 분위기가 좋음\n- 재료가 신선하고 맛이 좋음\n- ㅎㅎ, 이모지 섞어서 리얼 후기 느낌으로 작성"
+            )
 
-        must_include = st.text_input(
-            "필수 포함 키워드",
-            value="",
-            placeholder="예) 맛있어요, 친절해요, 재방문 의사 있어요"
-        )
+            must_include = st.text_input(
+                "필수 포함 키워드",
+                value="",
+                placeholder="예) 맛있어요, 친절해요, 재방문 의사 있어요"
+            )
 
-        forbidden = st.text_input(
-            "금지 키워드(,로 구분)",
-            value="",
-            placeholder="예) 별로, 최악, 과장 표현"
-        )
+            forbidden = st.text_input(
+                "금지 키워드(,로 구분)",
+                value="",
+                placeholder="예) 별로, 최악, 과장 표현"
+            )
 
-    col_run, col_clear = st.columns(2)
-    run_btn = col_run.button("🚀 리뷰 생성 시작", use_container_width=True)
-    clear_btn = col_clear.button("🗑 결과 초기화", use_container_width=True)
+        col_run, col_clear = st.columns(2)
+        run_btn = col_run.button("🚀 리뷰 생성 시작", use_container_width=True)
+        clear_btn = col_clear.button("🗑 결과 초기화", use_container_width=True)
 
     if clear_btn:
         st.session_state.generated_results = []
@@ -892,7 +792,7 @@ with left:
             target_count = int(count)
             mid_len = int((min_len + max_len) / 2)
             all_reviews = []
-            batch_size = 10  # 균등한 분배와 정교한 제어를 위해 배치 단위 조정
+            batch_size = 10
 
             with right:
                 status_text = st.empty()
@@ -907,7 +807,6 @@ with left:
                 )
 
             try:
-                selected_styles = random.choices(WRITING_STYLES, k=target_count)
                 all_situations = list(CATEGORY_PATTERNS[category_group].keys())
                 situation_cycle = (all_situations * ((target_count // len(all_situations)) + 1))[:target_count]
                 random.shuffle(situation_cycle)
@@ -922,7 +821,6 @@ with left:
                     current_batch_size = min(batch_size, total_count - start)
                     end = start + current_batch_size
 
-                    # 구간에 따라 강제로 하한선과 상한선을 배분하여 골고루 섞이게 유도
                     if start < total_count * 0.33:
                         b_min, b_max = min_len, mid_len
                     elif start < total_count * 0.66:
@@ -1008,7 +906,6 @@ with left:
                     raw_text = message.content[0].text.strip()
                     batch_reviews = clean_reviews(raw_text)
 
-                    # 가드레일: 글자수 범위와 중복 여부를 검사한 뒤 누적
                     for r in batch_reviews:
                         r = r.strip()
 
@@ -1046,19 +943,19 @@ with left:
                 st.error(f"오류: {str(e)}")
 
     with right:
-    st.markdown("""
-    <div class="result-header-card">
-        <div class="result-header-icon">📝</div>
-        <div>
-            <div class="result-header-title">생성 결과</div>
-            <div class="result-header-desc">
-                생성된 리뷰가 아래에 표시됩니다.<br>
-                생성 후 바로 복사하여 사용할 수 있습니다.
+        st.markdown("""
+        <div class="result-header-card">
+            <div class="result-header-icon">📝</div>
+            <div>
+                <div class="result-header-title">생성 결과</div>
+                <div class="result-header-desc">
+                    생성된 리뷰가 아래에 표시됩니다.<br>
+                    생성 후 바로 복사하여 사용할 수 있습니다.
+                </div>
             </div>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
-        
+        """, unsafe_allow_html=True)
+
         if st.session_state.generated_results:
             excel_ready = "\n".join(st.session_state.generated_results)
             copy_text = json.dumps(excel_ready)
@@ -1071,11 +968,16 @@ with left:
             """, height=64)
 
             st.text_area("📋 엑셀 붙여넣기용 전체 복사", value=excel_ready, height=260)
-            st.markdown("#### 미리보기")
+            st.markdown('<div class="preview-title">미리보기</div>', unsafe_allow_html=True)
+
             for idx, text in enumerate(st.session_state.generated_results):
                 st.markdown(f'<div class="result-box"><b>{idx + 1}.</b> {text}</div>', unsafe_allow_html=True)
         else:
-            st.markdown('<div class="info-box">아직 생성된 리뷰가 없습니다.<br>왼쪽에서 업종과 고객 가이드를 입력한 뒤 <b>리뷰 생성 시작</b> 버튼을 눌러주세요.</div>', unsafe_allow_html=True)
+            st.markdown(
+                '<div class="info-box">아직 생성된 리뷰가 없습니다.<br>왼쪽에서 업종과 고객 가이드를 입력한 뒤 <b>리뷰 생성 시작</b> 버튼을 눌러주세요.</div>',
+                unsafe_allow_html=True
+            )
+
 
 if menu == "📚 저장된 원고":
     st.markdown("""
