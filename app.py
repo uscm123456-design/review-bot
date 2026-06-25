@@ -1006,26 +1006,18 @@ with left:
                 st.error(f"오류: {str(e)}")
 
     with right:
-        st.markdown("""
-<div class="top-guide-card">
-    <div class="top-guide-inner">
-        <div class="top-guide-icon">📝</div>
-
+    st.markdown("""
+    <div class="result-header-card">
+        <div class="result-header-icon">📝</div>
         <div>
-            <div class="top-guide-title">
-                생성 결과
-            </div>
-
-            <div class="top-guide-desc">
+            <div class="result-header-title">생성 결과</div>
+            <div class="result-header-desc">
                 생성된 리뷰가 아래에 표시됩니다.<br>
                 생성 후 바로 복사하여 사용할 수 있습니다.
             </div>
-
         </div>
-
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
         
         if st.session_state.generated_results:
             excel_ready = "\n".join(st.session_state.generated_results)
