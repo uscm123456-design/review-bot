@@ -324,6 +324,46 @@ div[data-testid="stVerticalBlockBorderWrapper"] > div {
 }
 </style>
 """, unsafe_allow_html=True)
+
+.result-header-card {
+    background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(236,72,153,0.10));
+    border: 1px solid rgba(221,214,254,0.95);
+    border-radius: 24px;
+    padding: 26px 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 14px 36px rgba(124,58,237,0.10);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.result-header-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    box-shadow: 0 16px 32px rgba(236,72,153,0.24);
+    flex-shrink: 0;
+}
+
+.result-header-title {
+    font-size: 28px;
+    font-weight: 950;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.result-header-desc {
+    color: #374151;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
 menu = st.sidebar.radio("메뉴", ["✍️ 원고 생성", "📚 저장된 원고"])
 
 CATEGORY_PATTERNS = {
