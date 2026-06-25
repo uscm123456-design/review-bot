@@ -517,6 +517,19 @@ def inject_main_style():
         font-size: 13px;
         line-height: 1.6;
     }
+    .sidebar-bottom{
+    position:fixed;
+    bottom:20px;
+    left:18px;
+    width:214px;
+    z-index:999;
+    }
+
+    .sidebar-desc{
+    margin-top:6px;
+    color:#64748b;
+    font-size:13px;
+    }
     .sidebar-user {
         font-size: 14px;
         font-weight: 950;
@@ -782,13 +795,17 @@ menu = st.sidebar.radio(
 )
 
 st.sidebar.markdown("""
-<div class="sidebar-bottom-card">
-    <div class="sidebar-user">👤 관리자님</div>
-    오늘도 좋은 하루 되세요!
+<div class="sidebar-bottom">
+    <div class="sidebar-bottom-card">
+        <div class="sidebar-user">👤 관리자님</div>
+        <div class="sidebar-desc">오늘도 좋은 하루 되세요!</div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
-if st.sidebar.button("↪ 로그아웃", use_container_width=True):
+logout_btn = st.sidebar.button("↪ 로그아웃", use_container_width=True)
+
+if logout_btn:
     st.session_state.authenticated = False
     st.rerun()
 
