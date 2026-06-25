@@ -519,7 +519,7 @@ def inject_main_style():
     }
     .sidebar-bottom{
     position:fixed;
-    bottom:20px;
+    bottom:92px;
     left:18px;
     width:214px;
     z-index:999;
