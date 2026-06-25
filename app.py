@@ -459,13 +459,94 @@ def inject_main_style():
         padding-bottom: 4rem;
     }
     section[data-testid="stSidebar"] {
-        width: 240px !important;
-        min-width: 240px !important;
-        background: rgba(255,255,255,0.78);
-        backdrop-filter: blur(18px);
-        border-right: 1px solid rgba(226,232,240,0.85);
+        width: 260px !important;
+        min-width: 260px !important;
+        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,247,255,0.96)) !important;
+        border-right: 1px solid rgba(221,214,254,0.95) !important;
+        box-shadow: 14px 0 42px rgba(124,58,237,0.08);
+    }
+    section[data-testid="stSidebar"] > div {
+        padding: 28px 18px 18px !important;
     }
     section[data-testid="stSidebar"] * { font-weight: 750; }
+
+    .sidebar-brand {
+        text-align: center;
+        padding: 8px 0 28px;
+        border-bottom: 1px solid rgba(226,232,240,0.75);
+        margin-bottom: 18px;
+    }
+    .sidebar-logo {
+        width: 54px;
+        height: 54px;
+        border-radius: 18px;
+        margin: 0 auto 12px;
+        background: linear-gradient(135deg, #7c3aed, #ec4899);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        font-weight: 950;
+        box-shadow: 0 16px 30px rgba(124,58,237,0.26);
+    }
+    .sidebar-title {
+        font-size: 21px;
+        font-weight: 950;
+        color: #111827;
+        line-height: 1.1;
+    }
+    .sidebar-subtitle {
+        margin-top: 6px;
+        font-size: 11px;
+        font-weight: 900;
+        color: #6d28d9;
+        letter-spacing: .45px;
+    }
+    .sidebar-bottom-card {
+        margin-top: 30px;
+        padding: 16px 14px;
+        border: 1px solid rgba(226,232,240,0.95);
+        border-radius: 16px;
+        background: rgba(255,255,255,0.82);
+        box-shadow: 0 12px 26px rgba(15,23,42,0.05);
+        color: #334155;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+    .sidebar-user {
+        font-size: 14px;
+        font-weight: 950;
+        color: #111827;
+        margin-bottom: 4px;
+    }
+    section[data-testid="stSidebar"] div[role="radiogroup"] {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    section[data-testid="stSidebar"] div[role="radiogroup"] label {
+        background: rgba(255,255,255,0.76) !important;
+        border: 1px solid rgba(226,232,240,0.95) !important;
+        border-radius: 14px !important;
+        padding: 12px 13px !important;
+        margin: 0 !important;
+        transition: all .18s ease;
+        color: #111827 !important;
+    }
+    section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
+        background: rgba(124,58,237,0.08) !important;
+        border-color: rgba(124,58,237,0.25) !important;
+    }
+    section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) {
+        background: linear-gradient(90deg, #7c3aed, #a855f7) !important;
+        color: white !important;
+        border-color: transparent !important;
+        box-shadow: 0 13px 26px rgba(124,58,237,0.26);
+    }
+    section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) * {
+        color: white !important;
+    }
 
     .hero-card {
         background:
@@ -683,7 +764,30 @@ inject_main_style()
 if "generated_results" not in st.session_state:
     st.session_state.generated_results = []
 
-menu = st.sidebar.radio("메뉴", ["✍️ 원고 생성", "📚 저장된 원고"])
+st.sidebar.markdown("""
+<div class="sidebar-brand">
+    <div class="sidebar-logo">✦</div>
+    <div class="sidebar-title">USCM</div>
+    <div class="sidebar-subtitle">AI REVIEW STUDIO</div>
+</div>
+""", unsafe_allow_html=True)
+
+menu = st.sidebar.radio(
+    "메뉴",
+    ["✍️ 원고 생성", "📚 저장된 원고"],
+    label_visibility="collapsed"
+)
+
+st.sidebar.markdown("""
+<div class="sidebar-bottom-card">
+    <div class="sidebar-user">👤 관리자님</div>
+    오늘도 좋은 하루 되세요!
+</div>
+""", unsafe_allow_html=True)
+
+if st.sidebar.button("↪ 로그아웃", use_container_width=True):
+    st.session_state.authenticated = False
+    st.rerun()
 
 
 if menu == "✍️ 원고 생성":
