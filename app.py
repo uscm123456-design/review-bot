@@ -1097,9 +1097,6 @@ if menu == "✍️ 원고 생성":
                     for r in batch_reviews:
                         r = r.strip()
 
-                        if not is_valid_review(r, min_len, max_len):
-                            continue
-
                         if is_duplicate_review(r, all_reviews):
                             continue
 
@@ -1121,11 +1118,6 @@ if menu == "✍️ 원고 생성":
 
                 with right:
                     status_text.success("✅ 생성 완료")
-
-                if len(st.session_state.generated_results) < target_count:
-                    st.warning(
-                        f"요청한 {target_count}개 중 규격을 만족하는 {len(st.session_state.generated_results)}개만 생성됐습니다. 부족할 경우 다시 시도해 주세요."
-                    )
 
             except Exception as e:
                 st.error(f"오류: {str(e)}")
